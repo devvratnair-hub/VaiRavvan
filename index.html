@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VaiRavvan</title>
+<meta name="description" content="Your dignity. Your choices. Your next step. Fast, gentle guidance to emergency help and established support services across Canada.">
+<meta name="theme-color" content="#0b0e22">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="referrer" content="no-referrer">
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@font-face{font-family:"Marcellus";src:url(assets/fonts/marcellus-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Atkinson Hyperlegible";src:url(assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Atkinson Hyperlegible";src:url(assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Atkinson Hyperlegible";src:url(assets/fonts/atkinson-hyperlegible-latin-400-italic.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
+/* Concept "Neelkantha": a night-sky world (the blue throat that holds pain so others can live),
+   silver like the crescent and the logo, saffron reserved for urgent action. Single dark world by choice:
+   the logo is silver and needs night behind it. */
+:root{
+  --night:#0b0e22; --night2:#10153a; --surface:#161c44; --surface2:#1e2656; --line:#2c356b;
+  --ink:#eef0fa; --muted:#aeb5d8; --silver:#d7dcec;
+  --neel:#8ea6ff; --neel-deep:#3550cf; --saffron:#ffb760; --saffron-ink:#231400;
+  --ok:#6fd6ad; --warn:#ffd277; --crit:#ff9b9b;
+  --display:"Marcellus","Palatino Linotype",Palatino,Georgia,serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:12px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:7rem}
+body{background:var(--night);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.6;min-height:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--night)}
+a{color:var(--neel);text-underline-offset:.18em}
+:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.2;margin:0;text-wrap:balance;letter-spacing:.01em}
+h1{font-size:clamp(2rem,1.3rem + 3vw,3.3rem)}
+h2{font-size:clamp(1.55rem,1.2rem + 1.4vw,2.1rem)}
+h3{font-size:1.25rem}
+p{margin:0}
+.wrap{max-width:70rem;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.muted{color:var(--muted)}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--silver);opacity:.8;font-weight:700}
+.stack{display:grid;gap:1rem}
+.row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+
+/* prototype ribbon */
+.proto{background:var(--surface2);color:var(--silver);font-size:.85rem;text-align:center;padding:.4rem 1rem;border-bottom:1px solid var(--line)}
+.proto b{color:var(--warn)}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(11,14,34,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:1rem;padding-block:.55rem}
+.brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--ink);margin-right:auto;min-width:0}
+.brand img{width:40px;height:40px;border-radius:50%}
+.brand span{font-family:var(--display);font-size:1.35rem;letter-spacing:.03em}
+.navlinks{display:flex;gap:1.1rem}
+.navlinks a{color:var(--muted);text-decoration:none;font-size:.95rem}
+.navlinks a:hover,.navlinks a[aria-current="page"]{color:var(--ink)}
+.exit{display:inline-flex;align-items:center;gap:.45rem;background:var(--silver);color:var(--night);font-weight:700;font-size:.92rem;text-decoration:none;padding:.5rem .95rem;border-radius:999px;white-space:nowrap;border:0;cursor:pointer}
+.exit kbd{font-family:var(--body);font-size:.68rem;border:1px solid currentColor;border-radius:4px;padding:0 .3rem;opacity:.7}
+@media (max-width:820px){.navlinks{display:none}.exit kbd{display:none}}
+
+.urgent{background:var(--night2);border-bottom:1px solid var(--line)}
+.urgent .wrap{padding-block:.5rem;font-size:.95rem;display:flex;flex-wrap:wrap;gap:.25rem 1rem;justify-content:space-between}
+.urgent b{color:var(--saffron)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;padding:.7rem 1.35rem;border-radius:var(--r);font:inherit;font-weight:700;text-decoration:none;cursor:pointer;border:2px solid transparent;color:var(--ink);background:transparent}
+.btn.now{background:var(--saffron);color:var(--saffron-ink)}
+.btn.primary{background:var(--neel-deep);color:#fff}
+.btn.ghost{border-color:var(--line);color:var(--ink)}
+.btn.ghost:hover{border-color:var(--silver)}
+.btn:hover{filter:brightness(1.08)}
+.btn.sm{min-height:2.4rem;padding:.4rem .9rem;font-size:.92rem}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero::before{content:"";position:absolute;inset:-20% -10% auto;height:140%;pointer-events:none;
+  background:
+   radial-gradient(closest-side,rgba(80,110,255,.22),transparent 70%) 50% 34%/70rem 34rem no-repeat,
+   repeating-radial-gradient(circle at 50% 34%,transparent 0 46px,rgba(215,220,236,.045) 46px 47px);}
+.hero .wrap{position:relative;padding-block:clamp(1.5rem,4vw,3rem) clamp(2.5rem,5vw,4rem);display:grid;justify-items:center;text-align:center;gap:1.1rem}
+.hero .logo{width:min(640px,100%);height:auto;filter:drop-shadow(0 10px 40px rgba(60,90,255,.35))}
+@media (prefers-reduced-motion:no-preference){.hero .logo{animation:breathe 7s ease-in-out infinite}}
+@keyframes breathe{50%{filter:drop-shadow(0 10px 56px rgba(90,120,255,.55))}}
+.hero .tag{font-family:var(--display);font-size:clamp(1.35rem,1rem + 1.6vw,2rem);color:var(--silver)}
+.hero .lede{max-width:46ch;color:var(--muted)}
+.hero .row{justify-content:center;margin-top:.5rem}
+
+/* three doors */
+.doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:-1px}
+.door{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.4rem;display:grid;grid-template-rows:auto auto 1fr auto;gap:.6rem;text-decoration:none;color:var(--ink);min-width:0}
+.door:hover{border-color:var(--silver)}
+.door .k{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.door.d1 .k{color:var(--saffron)} .door.d2 .k{color:var(--neel)} .door.d3 .k{color:var(--silver)}
+.door p{color:var(--muted);font-size:.98rem}
+.door .go{font-weight:700}
+@media (max-width:820px){.doors{grid-template-columns:1fr}}
+
+section.block{padding-block:clamp(2.5rem,5vw,4rem)}
+.divider{display:flex;align-items:center;gap:1rem;color:var(--silver);opacity:.6;margin-block:.5rem}
+.divider::before,.divider::after{content:"";height:1px;flex:1;background:var(--line)}
+.divider i{width:10px;height:10px;border:1px solid currentColor;transform:rotate(45deg);display:block}
+
+/* services list */
+.svc{display:grid;gap:.75rem}
+.svc .item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.5rem 1rem;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1rem 1.2rem}
+.svc .item h3{font-family:var(--body);font-weight:700;font-size:1.05rem}
+.svc .item p{color:var(--muted);font-size:.95rem}
+.svc .num{font-family:var(--display);font-size:1.5rem;letter-spacing:.03em;font-variant-numeric:tabular-nums;user-select:all;white-space:nowrap}
+.svc .item.hot{border-color:var(--saffron)}
+.svc .item.hot .num{color:var(--saffron)}
+@media (max-width:560px){.svc .item{grid-template-columns:1fr}}
+
+/* category grid */
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(15.5rem,1fr));gap:.9rem;margin-top:1.5rem}
+.cat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.15rem 1.2rem;text-align:left;font:inherit;color:var(--ink);cursor:pointer;display:grid;gap:.35rem;align-content:start}
+.cat:hover{border-color:var(--neel)}
+.cat b{font-size:1.04rem}
+.cat span{color:var(--muted);font-size:.93rem}
+.chip{display:inline-flex;align-items:center;gap:.35rem;font-size:.75rem;font-weight:700;letter-spacing:.04em;padding:.15rem .55rem;border-radius:999px;border:1px solid currentColor;width:max-content}
+.chip.urg{color:var(--saffron)} .chip.hi{color:var(--crit)} .chip.med{color:var(--warn)} .chip.lo{color:var(--ok)} .chip.info{color:var(--neel)}
+
+/* guided path */
+.check{background:var(--surface);border:1px solid var(--saffron);border-radius:var(--r);padding:1.4rem;display:grid;gap:1rem}
+.steps{counter-reset:s;display:grid;gap:.9rem;padding:0;margin:0;list-style:none}
+.steps li{counter-increment:s;display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:.8rem;align-items:start}
+.steps li::before{content:counter(s);font-family:var(--display);font-size:1.1rem;width:2.2rem;height:2.2rem;border-radius:50%;border:1px solid var(--silver);display:grid;place-items:center;color:var(--silver)}
+
+/* forms */
+form{display:grid;gap:1.3rem}
+fieldset{border:1px solid var(--line);border-radius:var(--r);padding:1rem 1.2rem 1.2rem;margin:0;display:grid;gap:.6rem;min-width:0}
+legend{padding:0 .4rem;font-weight:700}
+label{display:grid;gap:.35rem;font-weight:700}
+label small,.hint{font-weight:400;color:var(--muted);font-size:.9rem}
+input[type=text],input[type=password],select,textarea{font:inherit;color:var(--ink);background:var(--night2);border:1px solid var(--line);border-radius:10px;padding:.7rem .85rem;width:100%}
+textarea{min-height:6rem;resize:vertical}
+.opt{display:flex;gap:.6rem;align-items:flex-start;font-weight:400}
+.opt input{margin-top:.35rem;accent-color:var(--neel)}
+.formcard{max-width:40rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(1.2rem,3vw,2rem)}
+.warnbox{background:var(--night2);border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;font-size:.93rem;color:var(--muted)}
+.err{color:var(--crit);font-size:.92rem}
+
+/* timeline */
+.tl{display:flex;gap:0;margin-top:.8rem;flex-wrap:wrap}
+.tl span{flex:1;min-width:6.5rem;font-size:.82rem;color:var(--muted);padding-top:.6rem;border-top:3px solid var(--line)}
+.tl span.on{color:var(--ink);border-color:var(--neel)}
+.req{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.2rem 1.3rem}
+.ref{font-family:var(--display);font-size:1.15rem;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+
+/* admin */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem;margin-top:1.2rem}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:.9rem 1rem}
+.kpi b{display:block;font-family:var(--display);font-size:1.9rem;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--muted);font-size:.88rem}
+@media (max-width:700px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.adm{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:1rem;margin-top:1.2rem;align-items:start}
+@media (max-width:980px){.adm{grid-template-columns:1fr}}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:.9rem}
+th,td{text-align:left;padding:.7rem .8rem;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
+tbody tr{cursor:pointer}
+tbody tr:hover,tbody tr.sel{background:var(--surface2)}
+td.t{font-variant-numeric:tabular-nums}
+.over{color:var(--crit);font-weight:700}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.2rem;display:grid;gap:1rem;position:sticky;top:7rem}
+.panel dl{display:grid;grid-template-columns:8.5rem minmax(0,1fr);gap:.35rem .8rem;margin:0;font-size:.93rem}
+.panel dt{color:var(--muted)}
+.panel dd{margin:0}
+.flag{background:rgba(255,155,155,.08);border:1px solid var(--crit);border-radius:10px;padding:.7rem .9rem;font-size:.92rem}
+.filters{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.filters button{font:inherit;font-size:.88rem;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:.3rem .8rem;cursor:pointer}
+.filters button[aria-pressed="true"]{color:var(--night);background:var(--silver);border-color:var(--silver)}
+.toast{position:fixed;left:50%;bottom:calc(1.2rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--silver);color:var(--night);font-weight:700;padding:.65rem 1.1rem;border-radius:999px;z-index:50}
+
+footer{border-top:1px solid var(--line);margin-top:2rem}
+/* emergency */
+.sos{background:var(--surface);border:1px solid var(--saffron);border-radius:var(--r);padding:clamp(1.2rem,3vw,2rem);display:grid;gap:1rem;justify-items:start}
+.sosbtn{display:flex;align-items:center;justify-content:center;width:100%;min-height:5.5rem;border-radius:18px;background:var(--saffron);color:var(--saffron-ink);font-family:var(--display);font-size:clamp(1.8rem,1.3rem + 2vw,2.6rem);text-decoration:none;letter-spacing:.04em}
+.sosbtn:hover{filter:brightness(1.06)}
+.sent{background:var(--night2);border:1px dashed var(--silver);border-radius:10px;padding:.8rem 1rem;font-size:.95rem;width:100%}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+@media (max-width:700px){.two{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.2rem 1.3rem;display:grid;gap:.6rem;align-content:start;min-width:0}
+.card ol,.card ul{margin:0;padding-left:1.2rem;display:grid;gap:.35rem;color:var(--muted)}
+.provsel{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;font-weight:700}
+.provsel select{width:auto;min-width:14rem}
+.svc .item .meta{font-size:.85rem;color:var(--muted)}
+.svc .item .num small{display:block;font-family:var(--body);font-size:.78rem;color:var(--muted);letter-spacing:0}
+.dirfilters{display:flex;flex-wrap:wrap;gap:.5rem}
+.dirfilters button{font:inherit;font-size:.88rem;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:.3rem .8rem;cursor:pointer}
+.dirfilters button[aria-pressed="true"]{color:var(--night);background:var(--silver);border-color:var(--silver)}
+/* kids world: a warm dawn sky, set explicitly */
+.kids{--k-bg:#fff4e6;--k-sky:#ffe3c7;--k-ink:#2b2459;--k-muted:#5b5480;--k-card:#ffffff;--k-line:#f0d9c0;--k-blue:#3f4fd1;--k-sun:#e46a1f;--k-mint:#1f8a63;
+  background:linear-gradient(180deg,var(--k-sky),var(--k-bg) 22rem);color:var(--k-ink);font-size:1.15rem}
+.kids h1,.kids h2,.kids h3{color:var(--k-ink)}
+.kids .muted{color:var(--k-muted)}
+.kids a{color:var(--k-blue)}
+.kids .khero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.5rem;align-items:center;padding-block:clamp(2rem,5vw,3.5rem) 1rem}
+.kids .khero svg{width:clamp(110px,18vw,170px);height:auto}
+@media (max-width:560px){.kids .khero{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.kids .stars{display:flex;gap:.4rem;align-items:center;font-weight:700;color:var(--k-muted);font-size:1rem}
+.kids .star{width:22px;height:22px}
+.lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:1rem;padding-bottom:1.5rem}
+.lesson{background:var(--k-card);border:2px solid var(--k-line);border-radius:22px;padding:1.2rem;text-align:left;font:inherit;color:var(--k-ink);cursor:pointer;display:grid;gap:.4rem;align-content:start}
+.lesson:hover,.lesson[aria-pressed="true"]{border-color:var(--k-blue)}
+.lesson b{font-family:var(--display);font-size:1.3rem;font-weight:400}
+.lesson span{color:var(--k-muted);font-size:1rem}
+.lesson .done{color:var(--k-mint);font-weight:700;font-size:.9rem}
+.kpanel{background:var(--k-card);border:2px solid var(--k-line);border-radius:26px;padding:clamp(1.2rem,3vw,2rem);display:grid;gap:1rem;margin-bottom:2rem}
+.kpanel ul{margin:0;padding-left:1.3rem;display:grid;gap:.5rem}
+.kbtn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:.75rem 1.4rem;cursor:pointer;background:var(--k-blue);color:#fff;min-height:3rem}
+.kbtn.alt{background:#fff;color:var(--k-ink);border:2px solid var(--k-line)}
+.kbtn.sun{background:var(--k-sun);color:#fff}
+.kids input[type=text]{background:#fff;color:var(--k-ink);border:2px solid var(--k-line);border-radius:14px}
+.choice{display:flex;flex-wrap:wrap;gap:.6rem}
+.feedback{font-weight:700;color:var(--k-mint)}
+.phone{width:min(300px,100%);background:#22204a;border-radius:34px;padding:1.2rem;display:grid;gap:.7rem;justify-self:center;color:#fff}
+.phone .scr{background:#0f0e26;border-radius:16px;min-height:4.5rem;display:grid;place-items:center;font-family:var(--display);font-size:2rem;letter-spacing:.2em;padding:.5rem;text-align:center}
+.phone .scr small{font-family:var(--body);font-size:.9rem;letter-spacing:0;color:#cfd3ff}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
+.pad button{font:inherit;font-size:1.4rem;font-weight:700;aspect-ratio:1;max-width:100%;border-radius:50%;border:0;background:#3a3870;color:#fff;cursor:pointer}
+.pad button.call{background:#2fa36b}
+.pad button.clr{background:#5a3a5a;font-size:1rem}
+.practice{background:#fff8d6;border:2px dashed #e4b400;color:#5a4500;border-radius:14px;padding:.6rem .9rem;font-weight:700;font-size:.95rem}
+.sidebtn{display:grid;grid-template-columns:1fr auto;align-items:center;justify-self:center;width:min(260px,100%)}
+.sidebtn .body{height:200px;border-radius:30px;background:#22204a;display:grid;place-items:center;color:#cfd3ff;font-size:2.2rem;font-family:var(--display)}
+.sidebtn button{width:22px;height:70px;border-radius:0 10px 10px 0;border:0;background:var(--k-sun);cursor:pointer}
+.hand{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}
+.hand div{background:var(--k-sky);border-radius:18px;padding:1rem;text-align:center;font-weight:700}
+.hand div i{display:block;font-style:normal;font-family:var(--display);font-size:2rem;color:var(--k-blue)}
+@media (max-width:520px){.hand{grid-template-columns:1fr}}
+.grownups{border-top:2px solid var(--k-line);padding-block:1.5rem 2.5rem;display:grid;gap:.6rem}
+
+footer .wrap{padding-block:2rem;display:flex;flex-wrap:wrap;gap:1rem 2.5rem;justify-content:space-between;font-size:.9rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home"><img src="assets/icon-160.webp" alt=""><span>VaiRavvan</span></a>
+    <nav class="navlinks" aria-label="Main">
+      <a href="#now">Help now</a>
+      <a href="#find">Find help</a>
+      <a href="#directory">Directory</a>
+      <a href="#kids">Kids</a>
+      <a href="#about">About</a>
+      <a href="#partners">For organisations</a>
+    </nav>
+    <a class="exit" id="exit" href="https://www.theweathernetwork.com/ca" rel="noreferrer">Leave <kbd>Esc ×2</kbd></a>
+  </div>
+</header>
+<div class="urgent"><div class="wrap"><span><b>In danger right now?</b> Call 911.</span><span>Thinking about suicide? Call or text 988.</span></div></div>
+
+<main id="app"></main>
+
+<footer><div class="wrap">
+  <span>VaiRavvan · A Dragonfruit Technologies CSR initiative, in development · © 2026 · No donations accepted</span>
+  <span><a href="#about">About, privacy and limits</a> · <a href="#partners">For organisations</a> · Services listed are independent of VaiRavvan · Last checked October 2026</span>
+</div></footer>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+const LOGO="assets/logo.webp";
+const DIR=[{"scope": "National", "category": "Immediate danger", "service": "9-1-1 Emergency (police/fire/ambulance)", "who_for": "Anyone in immediate danger or needing urgent medical help", "phone": "911", "text_or_chat": "No public text. Text with 9-1-1 is only for registered Deaf, hard of hearing or speech-impaired users", "hours": "24/7", "website": "https://crtc.gc.ca/eng/phone/911/can.htm"}, {"scope": "National", "category": "Suicide / mental-health crisis", "service": "9-8-8 Suicide Crisis Helpline", "who_for": "Anyone thinking about suicide, or worried about someone", "phone": "988", "text_or_chat": "Text 988", "hours": "24/7/365", "website": "https://988.ca"}, {"scope": "National", "category": "Youth", "service": "Kids Help Phone", "who_for": "Ages 5 to 29; confidential and anonymous", "phone": "1-800-668-6868", "text_or_chat": "Text CONNECT to 686868. Indigenous youth can text FIRST NATIONS, INUIT or METIS to 686868 for an Indigenous responder. Live chat on website.", "hours": "Phone and text 24/7; chat hours conflict on site", "website": "https://kidshelpphone.ca"}, {"scope": "National", "category": "Indigenous", "service": "Hope for Wellness Help Line", "who_for": "First Nations, Inuit and Métis people; also abuse, family violence and GBV calls; 2SLGBTQIA+ affirming", "phone": "1-855-242-3310", "text_or_chat": "Online chat at hopeforwellness.ca", "hours": "24/7", "website": "https://www.hopeforwellness.ca"}, {"scope": "National", "category": "Indigenous", "service": "National Indian Residential School Crisis Line", "who_for": "Former Indian Residential School students and their families", "phone": "1-866-925-4419", "text_or_chat": "None listed", "hours": "24/7", "website": ""}, {"scope": "National", "category": "Indigenous / GBV", "service": "Missing and Murdered Indigenous Women and Girls Crisis Line", "who_for": "Anyone affected by missing and murdered Indigenous women, girls and 2SLGBTQQIA+ people", "phone": "1-844-413-6649", "text_or_chat": "None listed", "hours": "24/7", "website": ""}, {"scope": "National", "category": "Human trafficking", "service": "Canadian Human Trafficking Hotline", "who_for": "Victims and survivors, people worried about someone, anyone giving a tip", "phone": "1-833-900-1010", "text_or_chat": "Online chat (per canada.ca)", "hours": "24/7/365", "website": "https://www.canadianhumantraffickinghotline.ca"}, {"scope": "National", "category": "Child sexual exploitation (online)", "service": "Cybertip.ca", "who_for": "Report online sexual exploitation of a child: abuse material, luring, sextortion, child trafficking, sharing intimate images of under-18s", "phone": "1-866-658-9022", "text_or_chat": "Online report form: cybertip.ca/en/report/", "hours": "Web reports reviewed Mon-Fri 8:30am-4pm CT", "website": "https://cybertip.ca"}, {"scope": "National", "category": "Child sexual exploitation (online)", "service": "NeedHelpNow.ca", "who_for": "Youth whose sexual images were shared, or who were lured, sextorted or harmed online; helps with takedowns", "phone": "Refers to Kids Help Phone 1-800-668-6868", "text_or_chat": "Contact form", "hours": "Not stated", "website": "https://needhelpnow.ca"}, {"scope": "National", "category": "Child protection", "service": "Canadian Centre for Child Protection (C3P)", "who_for": "Child safety and child-exploitation programs", "phone": "1-800-532-9135", "text_or_chat": "Contact form", "hours": "Mon-Fri 8:30am-4:30pm CT", "website": "https://protectchildren.ca"}, {"scope": "National", "category": "Missing / abducted children", "service": "MissingKids.ca (C3P)", "who_for": "Families of missing children; anyone with a tip or sighting", "phone": "1-866-543-8477 (1-866-KID-TIPS)", "text_or_chat": "Online intake and tip forms", "hours": "Not stated", "website": "https://missingkids.ca"}, {"scope": "National", "category": "Missing / abducted children", "service": "Missing Children Society of Canada", "who_for": "Families of missing children (search and family support)", "phone": "1-800-661-6160", "text_or_chat": "None listed", "hours": "Not stated", "website": "https://www.mcsc.ca"}, {"scope": "National", "category": "Missing persons", "service": "Canada's Missing (RCMP)", "who_for": "Profiles of missing persons; tips", "phone": "None listed", "text_or_chat": "Online tip submission", "hours": "Not stated", "website": "https://canadasmissing.ca"}, {"scope": "National", "category": "GBV / domestic violence", "service": "ShelterSafe.ca", "who_for": "Women and children looking for a shelter", "phone": "None (web map of shelters)", "text_or_chat": "Website map", "hours": "Online", "website": "https://sheltersafe.ca"}, {"scope": "National", "category": "GBV / domestic violence", "service": "iHEAL app", "who_for": "Women abused by a current or past partner: risk assessment, safety planning, local services", "phone": "None", "text_or_chat": "Mobile app", "hours": "Online", "website": "https://ihealapp.ca"}, {"scope": "National", "category": "GBV (silent signal)", "service": "Signal for Help (Canadian Women's Foundation)", "who_for": "People in danger who can't speak safely; anyone who sees the signal", "phone": "None", "text_or_chat": "Hand gesture: palm forward, tuck thumb, fold fingers over thumb", "hours": "N/A", "website": "https://canadianwomen.org/signal-for-help/"}, {"scope": "National", "category": "2SLGBTQI+", "service": "Interligne", "who_for": "2SLGBTQI+ people, families and professionals", "phone": "1-888-505-1010", "text_or_chat": "Online chat", "hours": "24/7", "website": "https://interligne.co/en"}, {"scope": "National", "category": "2SLGBTQI+", "service": "Trans Lifeline (Canada)", "who_for": "Trans and gender-diverse people (peer support)", "phone": "1-877-330-6366", "text_or_chat": "None listed", "hours": "Mon-Fri 1pm-9pm ET", "website": "https://translifeline.org/hotline/"}, {"scope": "National", "category": "Youth (Black youth)", "service": "Black Youth Helpline", "who_for": "Black youth 12+", "phone": "1-833-294-8650", "text_or_chat": "None listed", "hours": "Daily 9am-10pm", "website": "https://www.blackyouth.ca"}, {"scope": "National", "category": "Victims of crime", "service": "Victim Services Directory (Justice Canada)", "who_for": "Find victim services by region", "phone": "None (searchable directory)", "text_or_chat": "Website", "hours": "Online", "website": "https://justice.canada.ca/eng/cj-jp/victims-victimes/vsd-rsv/agencies-agences.aspx"}, {"scope": "National", "category": "Victims of crime", "service": "Office of the Federal Ombudsperson for Victims of Crime", "who_for": "Victims of crime (federal resource and complaints)", "phone": "1-866-481-8429", "text_or_chat": "None listed", "hours": "Not stated", "website": "https://www.canada.ca/en/office-federal-ombudsperson-victims-crime/services-services.html"}, {"scope": "National", "category": "Older adults / fraud", "service": "Canadian Anti-Fraud Centre", "who_for": "Victims of fraud and scams, including elder financial exploitation", "phone": "1-888-495-8501", "text_or_chat": "Online reporting", "hours": "Mon-Fri 10am-4:45pm ET", "website": "https://antifraudcentre-centreantifraude.ca"}, {"scope": "National", "category": "Older adults / elder abuse", "service": "Canadian Network for the Prevention of Elder Abuse", "who_for": "Older adults facing abuse and people helping them", "phone": "None (website)", "text_or_chat": "Provincial and territorial pages", "hours": "Online", "website": "https://cnpea.ca/en/what-is-elder-abuse/get-help"}, {"scope": "National", "category": "Community referral", "service": "211", "who_for": "Anyone needing community, social and health services, including abuse supports", "phone": "211", "text_or_chat": "Text and chat (varies by province)", "hours": "24/7 in most of Canada", "website": "https://211.ca"}, {"scope": "BC", "category": "Domestic / family / sexual violence", "service": "VictimLinkBC", "who_for": "Victims of family and sexual violence and all crime; BC and Yukon", "phone": "1-800-563-0808", "text_or_chat": "Text 1-800-563-0808; email 211-VictimLinkBC@uwbc.ca", "hours": "24/7", "website": "https://www2.gov.bc.ca/gov/content/justice/criminal-justice/victims-of-crime/victimlinkbc"}, {"scope": "BC", "category": "Sexual violence", "service": "Salal Sexual Violence Support Centre crisis line", "who_for": "Women, Two-Spirit, trans, non-binary and gender-diverse people 14+", "phone": "1-877-392-7583; 604-255-6344", "text_or_chat": "Text 604-245-2425; online chat", "hours": "Phone 24/7; text/chat limited hours", "website": "https://www.salalsvsc.ca/"}, {"scope": "BC", "category": "Child abuse reporting", "service": "Provincial Centralized Screening (MCFD)", "who_for": "Anyone concerned a child or youth is unsafe", "phone": "1-800-663-9122", "text_or_chat": "None listed", "hours": "24/7/365", "website": "https://www2.gov.bc.ca/gov/content/safety/public-safety/protecting-children/reporting-child-abuse"}, {"scope": "BC", "category": "Child / youth help line", "service": "Helpline for Children", "who_for": "Children and youth", "phone": "1-877-631-8282", "text_or_chat": "None listed", "hours": "Any time", "website": "https://www2.gov.bc.ca/gov/content/safety/public-safety/protecting-children/reporting-child-abuse"}, {"scope": "BC", "category": "Seniors / elder abuse", "service": "Seniors Abuse and Information Line (SAIL)", "who_for": "Older adults experiencing abuse and people concerned about them", "phone": "1-866-437-1940; 604-437-1940", "text_or_chat": "None listed", "hours": "Currently weekdays 8am-4:30pm", "website": "https://seniorsfirstbc.ca/sail/"}, {"scope": "BC", "category": "Mental health / distress", "service": "310 Mental Health Support", "who_for": "Anyone in BC", "phone": "310-6789", "text_or_chat": "None listed", "hours": "Not stated on gov page", "website": "https://www2.gov.bc.ca/gov/content/health/managing-your-health/mental-health-substance-use/crisis-and-information-lines"}, {"scope": "BC", "category": "Mental health / distress", "service": "1-800-SUICIDE (Crisis Line Association of BC)", "who_for": "People in crisis or thinking about suicide", "phone": "1-800-784-2433", "text_or_chat": "None listed", "hours": "24/7", "website": "https://www2.gov.bc.ca/gov/content/health/managing-your-health/mental-health-substance-use/crisis-and-information-lines"}, {"scope": "BC", "category": "Shelter finder", "service": "BC Society of Transition Houses directory", "who_for": "Women and children fleeing violence", "phone": "1-800-661-1040 (office)", "text_or_chat": "Online directory", "hours": "Office hours", "website": "https://bcsth.ca/directory"}, {"scope": "BC", "category": "Human trafficking", "service": "VictimLinkBC human trafficking support", "who_for": "Trafficked persons and people concerned", "phone": "1-888-712-7974", "text_or_chat": "None listed", "hours": "24 hours", "website": "https://www2.gov.bc.ca/gov/content/justice/criminal-justice/victims-of-crime/human-trafficking"}, {"scope": "BC", "category": "Indigenous crisis line", "service": "KUU-US Crisis Line Society", "who_for": "First Nations and Indigenous people anywhere in BC", "phone": "1-800-588-8717", "text_or_chat": "None listed", "hours": "24/7", "website": ""}, {"scope": "BC", "category": "Indigenous crisis line", "service": "Métis Crisis Line (MNBC)", "who_for": "Métis people in BC", "phone": "1-833-638-4722", "text_or_chat": "None listed", "hours": "Not stated", "website": ""}, {"scope": "AB", "category": "Domestic / family violence", "service": "Family Violence Info Line", "who_for": "Anyone affected by family violence (incl. elder abuse)", "phone": "310-1818", "text_or_chat": "Text 310-1818; chat alberta.ca/SafetyChat", "hours": "Phone/text 24/7; chat daytime", "website": "https://www.alberta.ca/family-violence"}, {"scope": "AB", "category": "Abuse (concern for someone else)", "service": "Alberta Provincial Abuse Helpline", "who_for": "People concerned about abuse of someone else", "phone": "1-855-443-5722", "text_or_chat": "None listed", "hours": "Mon-Fri 7:30am-8pm", "website": "https://www.alberta.ca/get-help-and-support"}, {"scope": "AB", "category": "Sexual violence", "service": "Alberta's One Line for Sexual Violence (AASAS)", "who_for": "Anyone who has experienced sexual violence", "phone": "1-866-403-8000", "text_or_chat": "Text 1-866-403-8000; chat at aasas.ca", "hours": "9am-9pm daily", "website": "https://aasas.ca"}, {"scope": "AB", "category": "Child abuse reporting", "service": "Child Abuse Hotline", "who_for": "Concerns about abuse, neglect or sexual exploitation of a child", "phone": "1-800-387-5437", "text_or_chat": "None listed", "hours": "24/7", "website": "https://www.alberta.ca/get-help-and-support"}, {"scope": "AB", "category": "Child abuse reporting", "service": "Child Intervention Provincial Intake Line", "who_for": "Anyone reporting a child at risk", "phone": "1-800-638-0715", "text_or_chat": "None listed", "hours": "24/7", "website": "https://www.alberta.ca/report-child-abuse"}, {"scope": "AB", "category": "Adults in care", "service": "Protection for Persons in Care Reporting Line", "who_for": "Adults receiving publicly funded care", "phone": "1-888-357-9339", "text_or_chat": "None listed", "hours": "Not stated", "website": "https://www.alberta.ca/get-help-elder-abuse"}, {"scope": "AB", "category": "Mental health / distress", "service": "Mental Health Helpline (AHS)", "who_for": "Anyone in Alberta", "phone": "1-877-303-2642", "text_or_chat": "None listed", "hours": "24/7", "website": "https://www.alberta.ca/get-help-and-support"}, {"scope": "AB", "category": "Shelter finder", "service": "Alberta Council of Women's Shelters", "who_for": "People escaping family violence", "phone": "1-866-331-3933, press 1", "text_or_chat": "None listed", "hours": "Not stated", "website": "https://acws.ca"}, {"scope": "AB", "category": "Information / referral", "service": "211 Alberta", "who_for": "Anyone needing help finding services", "phone": "211", "text_or_chat": "Text 211; online chat", "hours": "24/7", "website": "https://ab.211.ca"}, {"scope": "SK", "category": "Domestic violence (navigation)", "service": "211 Saskatchewan abuse navigation", "who_for": "Anyone experiencing violence or abuse", "phone": "211; 1-855-275-1197", "text_or_chat": "Text 211; chat at sk.211.ca", "hours": "24/7", "website": "https://sk.211.ca/abuse/"}, {"scope": "SK", "category": "Domestic violence (people using violence)", "service": "Re:CONNECT", "who_for": "Men at risk of using interpersonal or family violence", "phone": "211 (call or text)", "text_or_chat": "Text 211", "hours": "24/7", "website": "https://sk.211.ca/abuse/"}, {"scope": "SK", "category": "Sexual violence", "service": "Regina Sexual Assault Centre 24-hour line", "who_for": "Survivors of sexual violence", "phone": "1-844-952-0434", "text_or_chat": "None listed", "hours": "24-hour", "website": "https://sk.211.ca/abuse/"}, {"scope": "SK", "category": "Domestic / sexual violence", "service": "Saskatoon Interval House crisis line", "who_for": "Women experiencing abuse or sexual assault", "phone": "1-888-338-0880", "text_or_chat": "None listed", "hours": "24-hour", "website": "https://sk.211.ca/abuse/"}, {"scope": "SK", "category": "Child abuse reporting", "service": "Child Protection (business hours)", "who_for": "Anyone concerned a child is abused or neglected", "phone": "North 1-866-719-6164; Centre 1-800-274-8297; South 1-844-787-3760", "text_or_chat": "None listed", "hours": "Business hours", "website": "https://www.saskatchewan.ca/residents/justice-crime-and-the-law/child-protection/child-abuse-and-neglect"}, {"scope": "SK", "category": "Child abuse reporting (after hours)", "service": "After Hours Crisis Centres", "who_for": "Reporting child abuse after hours", "phone": "Prince Albert 306-764-1011; Saskatoon 306-933-6200; Regina 306-569-2724", "text_or_chat": "None listed", "hours": "After hours", "website": "https://www.saskatchewan.ca/residents/justice-crime-and-the-law/child-protection/child-abuse-and-neglect"}, {"scope": "SK", "category": "Victim services", "service": "Victims Services (Ministry of Justice)", "who_for": "Victims of crime", "phone": "1-888-286-6664", "text_or_chat": "None listed", "hours": "Weekday business hours", "website": "https://www.saskatchewan.ca/residents/justice-crime-and-the-law/victims-of-crime-and-abuse"}, {"scope": "SK", "category": "Seniors / elder abuse", "service": "Seniors Information Line", "who_for": "Older adults (abuse and scams)", "phone": "1-888-823-2211", "text_or_chat": "None listed", "hours": "Not stated", "website": ""}, {"scope": "SK", "category": "Mental health / distress", "service": "HealthLine 811", "who_for": "Mental health and addictions crisis support", "phone": "811; 1-877-800-0002", "text_or_chat": "None listed", "hours": "24 hours", "website": "https://www.saskhealthauthority.ca/your-health/conditions-diseases-services/healthline-8-1-1"}, {"scope": "SK", "category": "Shelter finder", "service": "PATHS Saskatchewan", "who_for": "Women and children fleeing violence", "phone": "306-522-3515 (office)", "text_or_chat": "Online list at pathssk.org/get-help-now/", "hours": "Office hours", "website": "https://pathssk.org/get-help-now/"}, {"scope": "SK", "category": "MMIWG families", "service": "Family Information Liaison Unit (SK)", "who_for": "Families of missing and murdered Indigenous women and girls", "phone": "1-833-529-6486", "text_or_chat": "None listed", "hours": "Not stated", "website": "https://sk.211.ca/abuse/"}, {"scope": "MB", "category": "Domestic / family violence", "service": "Province-Wide Domestic Abuse Crisis Line", "who_for": "People experiencing domestic violence; shelter access", "phone": "1-877-977-0007; TTY 1-888-987-2829", "text_or_chat": "Text 204-792-5302 or 204-805-6682", "hours": "24/7", "website": "https://www.gov.mb.ca/wage/gbvp/resources.html"}, {"scope": "MB", "category": "Sexual violence", "service": "Klinic Sexual Assault Crisis Line", "who_for": "Survivors of sexual assault", "phone": "1-888-292-7565; 204-786-8631", "text_or_chat": "Video Relay available", "hours": "24/7", "website": "https://klinic.mb.ca"}, {"scope": "MB", "category": "Child abuse reporting", "service": "Child and Family Services intake and after-hours", "who_for": "Anyone concerned a child is harmed or neglected", "phone": "1-866-345-9241; Winnipeg 204-944-4200", "text_or_chat": "None listed", "hours": "24/7 incl. after hours", "website": "https://gov.mb.ca/fs/childfam/reporting.html"}, {"scope": "MB", "category": "Victim services", "service": "Manitoba Justice Victim Services", "who_for": "Victims of crime", "phone": "1-866-484-2846; 204-945-6851", "text_or_chat": "None listed", "hours": "Not stated", "website": "https://www.gov.mb.ca/justice/vs/index.html"}, {"scope": "MB", "category": "Seniors / elder abuse", "service": "Seniors Abuse Support Line", "who_for": "Older adults experiencing abuse", "phone": "1-888-896-7183", "text_or_chat": "None listed", "hours": "9am-5pm", "website": "https://gov.mb.ca/youarenotalone/findinghelp.html"}, {"scope": "MB", "category": "Mental health / distress", "service": "Klinic Crisis Line", "who_for": "Anyone in crisis", "phone": "1-888-322-3019; 204-786-8686", "text_or_chat": "None listed", "hours": "24/7", "website": "https://klinic.mb.ca"}, {"scope": "MB", "category": "Mental health / distress", "service": "Manitoba Suicide Prevention & Support Line", "who_for": "People thinking about suicide and supporters", "phone": "1-877-435-7170", "text_or_chat": "None listed", "hours": "24/7", "website": "https://gov.mb.ca/youarenotalone/findinghelp.html"}, {"scope": "MB", "category": "Human trafficking", "service": "Manitoba Human Trafficking Hotline", "who_for": "Trafficked or sexually exploited people and those concerned", "phone": "1-844-333-2211", "text_or_chat": "None listed", "hours": "24/7", "website": "https://gov.mb.ca/youarenotalone/findinghelp.html"}, {"scope": "YT", "category": "Domestic / family violence", "service": "VictimLinkBC (serves Yukon)", "who_for": "Victims of family and sexual violence and other crime", "phone": "1-800-563-0808", "text_or_chat": "Text 1-800-563-0808", "hours": "24/7", "website": "https://www2.gov.bc.ca/gov/content/justice/criminal-justice/victims-of-crime/victimlinkbc"}, {"scope": "YT", "category": "Domestic violence crisis", "service": "Kaushee's Place / Betty's Haven crisis line", "who_for": "Women and children experiencing violence", "phone": "867-668-5733", "text_or_chat": "Secure chat and texting", "hours": "24/7", "website": "https://yukon.ca/en/find-womens-shelter"}, {"scope": "YT", "category": "Sexual violence", "service": "Sexualized Assault Support Line (SART)", "who_for": "Anyone who experienced sexualized assault", "phone": "1-844-967-7275", "text_or_chat": "None listed", "hours": "24/7 throughout Yukon", "website": "https://yukon.ca/en/sart/get-support"}, {"scope": "YT", "category": "Child abuse reporting", "service": "Family and Children's Services", "who_for": "Anyone concerned a child under 19 needs protection", "phone": "867-667-3002; 1-800-661-0408 ext. 3002; RCMP 867-667-5555", "text_or_chat": "None listed", "hours": "Not stated (RCMP after hours)", "website": "https://yukon.ca/en/child-abuse"}, {"scope": "YT", "category": "Victim services", "service": "Yukon Victim Services", "who_for": "Victims of crime", "phone": "867-667-8500; 1-800-661-0408", "text_or_chat": "None listed", "hours": "Mon-Fri 8am-4:30pm", "website": "https://yukon.ca/en/legal-and-social-supports/supports-victims-crime/get-help-you-were-attacked-or-threatened"}, {"scope": "YT", "category": "Seniors / elder abuse", "service": "Adult Protection Unit", "who_for": "Older and vulnerable adults", "phone": "867-456-3946; 1-800-661-0408 ext. 3946", "text_or_chat": "None listed", "hours": "Not stated", "website": "https://yukon.ca/en/resources-crime-victims"}, {"scope": "YT", "category": "Mental health / distress", "service": "Reach Out Support Line (CMHA Yukon)", "who_for": "Anyone in Yukon", "phone": "1-844-533-3030", "text_or_chat": "Call or text", "hours": "24/7", "website": "https://yukon.cmha.ca/mental-health/find-help-now/"}, {"scope": "NT", "category": "Domestic / family violence", "service": "NWT Family Violence Shelters 24/7 crisis line", "who_for": "Anyone in NWT: shelter, Emergency Protection Orders, someone to talk to", "phone": "1-866-223-7775", "text_or_chat": "None listed", "hours": "24/7", "website": "https://www.hss.gov.nt.ca/en/services/family-violence/getting-help-family-violence"}, {"scope": "NT", "category": "Child abuse reporting", "service": "Child Protection Worker or RCMP", "who_for": "Anyone who thinks a child is abused", "phone": "Yellowknife 867-873-7276; after hours 867-445-1092", "text_or_chat": "None listed", "hours": "See notes", "website": "https://www.hss.gov.nt.ca/en/content/cfs-section-1-reporting-and-investigating-tools"}, {"scope": "NT", "category": "Victim services", "service": "NWT Victim Services", "who_for": "Victims of crime", "phone": "867-873-7002; YK after hours 867-765-8811; Inuvik after hours 867-620-0821", "text_or_chat": "Collect calls accepted", "hours": "Not stated", "website": "https://www.justice.gov.nt.ca/en/victim-services-contacts/"}, {"scope": "NT", "category": "Mental health / distress", "service": "NWT Help Line", "who_for": "All NWT residents", "phone": "1-800-661-0844", "text_or_chat": "Not confirmed", "hours": "24/7", "website": "https://www.hss.gov.nt.ca"}, {"scope": "NU", "category": "Domestic / family violence", "service": "Family abuse emergency on-call line", "who_for": "People experiencing family abuse; elder abuse", "phone": "1-844-534-1038", "text_or_chat": "None listed", "hours": "24/7", "website": "https://www.gov.nu.ca/en/families-parenting-elders-and-youth/family-violence"}, {"scope": "NU", "category": "Child abuse reporting", "service": "Family Services Child Protection", "who_for": "Anyone concerned a child needs protection", "phone": "1-844-392-4453; Iqaluit 867-979-5650; RCMP 867-975-1111", "text_or_chat": "None listed", "hours": "Not stated", "website": "https://www.gov.nu.ca/en/families-parenting-elders-and-youth/child-and-youth-protection"}, {"scope": "NU", "category": "Victim services", "service": "Nunavut Victim Services", "who_for": "Victims and survivors of crime", "phone": "1-866-456-5216", "text_or_chat": "None listed", "hours": "Not stated", "website": "https://gov.nu.ca/en/newsroom/national-victims-and-survivors-crime-week-2026-05-11"}, {"scope": "NU", "category": "Mental health / Inuit-specific", "service": "Kamatsiaqtut Nunavut Help Line", "who_for": "Everyone in Nunavut", "phone": "1-800-265-3333; 867-979-3333", "text_or_chat": "Phone only", "hours": "24/7", "website": "https://nunavuthelpline.ca"}, {"scope": "ON", "category": "Domestic / gender-based violence", "service": "Assaulted Women's Helpline", "who_for": "Women and their dependants experiencing or at risk of abuse", "phone": "1-866-863-0511; TTY 1-866-863-7868; #SAFE (#7233) on Bell/Rogers/Fido/Telus", "text_or_chat": "Chat Mon-Fri 11am-8pm", "hours": "24/7 phone", "website": "https://www.awhl.org/"}, {"scope": "ON", "category": "Domestic / gender-based violence (French)", "service": "Fem'aide", "who_for": "French-speaking women affected by violence", "phone": "1-877-336-2433; TTY 1-866-860-7082", "text_or_chat": "Text same number; chat at femaide.ca", "hours": "24/7", "website": "https://femaide.ca/"}, {"scope": "ON", "category": "Indigenous", "service": "Talk4Healing", "who_for": "Indigenous women and their families", "phone": "1-855-554-4325", "text_or_chat": "Text same number; live chat", "hours": "24/7", "website": "https://www.beendigen.com/programs/talk4healing/"}, {"scope": "ON", "category": "Sexual violence", "service": "Ontario sexual assault centres finder", "who_for": "Survivors of sexual violence", "phone": "No single number; each centre has a 24-hour line", "text_or_chat": "Varies", "hours": "24-hour (local)", "website": "https://sexualassaultsupport.ca/get-help/"}, {"scope": "ON", "category": "Sexual violence (men)", "service": "Support for Male Survivors of Sexual Abuse", "who_for": "Male survivors of sexual abuse", "phone": "1-866-887-0015", "text_or_chat": "None listed", "hours": "24/7", "website": ""}, {"scope": "ON", "category": "Victim services", "service": "Victim Support Line", "who_for": "Victims of crime and their families", "phone": "1-888-579-2888; 416-314-2447", "text_or_chat": "Chat via 211 Ontario", "hours": "24/7", "website": "https://ovss.findhelp.ca/"}, {"scope": "ON", "category": "Seniors / elder abuse", "service": "Seniors Safety Line", "who_for": "Seniors and people worried about an older person", "phone": "1-866-299-1011; TTY 1-866-299-0008", "text_or_chat": "Chat Mon-Fri 11am-8pm", "hours": "24/7/365", "website": "https://eapon.ca/seniors-safety-line/"}, {"scope": "ON", "category": "Child abuse reporting", "service": "Children's aid societies (local finder)", "who_for": "Anyone reporting suspected child abuse or neglect", "phone": "No province-wide number; find local society", "text_or_chat": "n/a", "hours": "n/a", "website": "http://www.oacas.org/childrens-aid-child-protection/locate-a-childrens-aid-society/"}, {"scope": "ON", "category": "Mental health / addictions", "service": "ConnexOntario", "who_for": "Mental health and addiction services navigation", "phone": "1-866-531-2600", "text_or_chat": "Text CONNEX to 247247; web chat", "hours": "24/7", "website": "https://www.connexontario.ca/"}, {"scope": "ON", "category": "Mental health (students)", "service": "Good2Talk", "who_for": "Post-secondary students", "phone": "1-866-925-5454", "text_or_chat": "Text GOOD2TALKON to 686868", "hours": "24/7", "website": "https://www.good2talk.ca/ontario"}, {"scope": "ON", "category": "Community navigation", "service": "211 Ontario", "who_for": "Anyone looking for local services", "phone": "211; 1-877-330-3213", "text_or_chat": "Text 211; chat", "hours": "24/7 phone", "website": "https://211ontario.ca/"}, {"scope": "ON", "category": "Legal (domestic violence)", "service": "Legal Aid Ontario", "who_for": "Low-income Ontarians incl. domestic violence and family law", "phone": "1-800-668-8258", "text_or_chat": "None listed", "hours": "Not stated", "website": ""}, {"scope": "QC", "category": "Domestic violence", "service": "SOS violence conjugale", "who_for": "People affected by intimate partner violence and those around them", "phone": "1-800-363-9010; 514-873-9010", "text_or_chat": "Text 438-601-1211 and chat, Mon-Fri 2:30pm-10pm", "hours": "24/7 phone", "website": "https://sosviolenceconjugale.ca/"}, {"scope": "QC", "category": "Sexual violence", "service": "Info-aide violence sexuelle", "who_for": "Victims of sexual violence and helpers", "phone": "1-888-933-9007", "text_or_chat": "Chat on website", "hours": "24/7", "website": "https://infoaideviolencesexuelle.ca"}, {"scope": "QC", "category": "Victim services", "service": "CAVAC", "who_for": "Victims and witnesses of crime", "phone": "1-866-532-2822", "text_or_chat": "Not mentioned", "hours": "Not stated", "website": "https://cavac.qc.ca"}, {"scope": "QC", "category": "Seniors / elder abuse", "service": "Ligne Aide Maltraitance Adultes Aînés", "who_for": "Older and vulnerable adults facing mistreatment", "phone": "1-888-489-2287", "text_or_chat": "Phone only", "hours": "8am-8pm daily", "website": "https://lignemaltraitance.ca/fr"}, {"scope": "QC", "category": "Child abuse reporting", "service": "DPJ (by region)", "who_for": "Anyone reporting a child at risk", "phone": "Regional numbers (e.g. Montréal 514-896-3100; Batshaw English Montréal 514-935-6196; Laval 450-975-4000; Montérégie 1-800-361-5310; Capitale-Nationale 1-800-463-4834)", "text_or_chat": "n/a", "hours": "24/7", "website": "https://www.quebec.ca/famille-et-soutien-aux-personnes/enfance/protection-de-la-jeunesse/faire-un-signalement-au-dpj/coordonnees-du-dpj"}, {"scope": "QC", "category": "Mental health / psychosocial", "service": "Info-Social 811 (option 2)", "who_for": "Anyone needing psychosocial advice", "phone": "811 then 2", "text_or_chat": "None", "hours": "24/7", "website": "https://www.quebec.ca/en/health/finding-a-resource/info-social-811"}, {"scope": "QC", "category": "Suicide prevention", "service": "1-866-APPELLE", "who_for": "People thinking about suicide or worried about someone", "phone": "1-866-277-3553", "text_or_chat": "Text 535353; chat at suicide.ca", "hours": "24/7", "website": "https://suicide.ca"}, {"scope": "QC", "category": "Youth", "service": "Tel-jeunes", "who_for": "Teenagers", "phone": "1-800-263-2266", "text_or_chat": "Text 1-866-811-4811; chat", "hours": "8am-midnight daily", "website": "https://www.teljeunes.com/en"}, {"scope": "QC", "category": "Parents", "service": "LigneParents", "who_for": "Parents of children 0-20", "phone": "1-800-361-5085", "text_or_chat": "Chat", "hours": "6am-midnight", "website": "https://ligneparents.com"}, {"scope": "QC", "category": "Rights / exploitation", "service": "CDPDJ", "who_for": "Exploitation of a senior or vulnerable person; youth rights", "phone": "1-800-361-6477", "text_or_chat": "None listed", "hours": "Not stated", "website": "https://www.cdpdj.qc.ca"}, {"scope": "NS", "category": "Domestic violence", "service": "Transition House Association of NS line", "who_for": "Anyone experiencing intimate partner or family violence and helpers", "phone": "1-855-225-0220", "text_or_chat": "Call or text", "hours": "24/7", "website": "https://thans.ca"}, {"scope": "NS", "category": "Information / referral", "service": "211 Nova Scotia", "who_for": "Crisis and community service navigation", "phone": "211; 1-855-466-4994", "text_or_chat": "Text 211; chat (weekday hours)", "hours": "Phone 24/7", "website": "https://ns.211.ca"}, {"scope": "NS", "category": "Legal protection", "service": "Emergency Protection Order line", "who_for": "Victims of intimate partner violence", "phone": "1-866-816-6555", "text_or_chat": "Not stated", "hours": "Not stated", "website": "https://novascotia.ca/just/victim_services/family_violence.asp"}, {"scope": "NS", "category": "Sexual violence", "service": "Avalon Sexual Assault Centre (Halifax)", "who_for": "Survivors of sexual violence", "phone": "902-422-4240", "text_or_chat": "Not stated", "hours": "Not stated", "website": "https://avaloncentre.ca"}, {"scope": "NS", "category": "Child abuse reporting", "service": "Child protection (business hours)", "who_for": "Anyone concerned about a child", "phone": "1-877-424-1177, option 1", "text_or_chat": "Not stated", "hours": "Weekdays 8:30am-4:30pm", "website": "https://novascotia.ca/coms/department/contact/ChildWelfareServices.html"}, {"scope": "NS", "category": "Child abuse reporting (after hours)", "service": "Child protection after-hours line", "who_for": "Child in danger outside business hours", "phone": "1-866-922-2434", "text_or_chat": "Not stated", "hours": "Evenings, weekends, holidays", "website": "https://novascotia.ca/coms/department/contact/ChildWelfareServices.html"}, {"scope": "NS", "category": "Victim services", "service": "Nova Scotia Victim Services", "who_for": "Victims of crime", "phone": "1-888-470-0773", "text_or_chat": "Not stated", "hours": "Not stated", "website": "https://novascotia.ca/just/victim_services/"}, {"scope": "NS", "category": "Seniors / adult abuse", "service": "Adult Protection Services", "who_for": "Abuse or neglect of an adult incl. seniors", "phone": "1-800-225-7225", "text_or_chat": "Not stated", "hours": "Not stated", "website": "https://novascotia.ca/dhw/ccs/protecting-vulnerable-adults.asp"}, {"scope": "NS", "category": "Mental health crisis", "service": "Provincial Mental Health and Addictions Crisis Line", "who_for": "Anyone in crisis", "phone": "1-888-429-8167", "text_or_chat": "Not stated", "hours": "24/7", "website": "https://mha.nshealth.ca"}, {"scope": "NS", "category": "Human trafficking", "service": "Nova Scotia Human Trafficking Hotline", "who_for": "Anyone affected by or reporting trafficking", "phone": "902-449-2425", "text_or_chat": "Not stated", "hours": "Not stated", "website": "https://novascotia.ca/help-stop-human-trafficking/"}, {"scope": "NS", "category": "Indigenous family violence", "service": "Mi'kmaw Family Healing Centre (Millbrook)", "who_for": "Indigenous people in mainland NS", "phone": "1-800-565-4741", "text_or_chat": "Not stated", "hours": "24-hour", "website": "https://thans.ca/?p=156"}, {"scope": "NS", "category": "Indigenous family violence", "service": "Mi'kmaw Family Healing Centre (Waycobah)", "who_for": "Indigenous people in Cape Breton and Paqtnkek", "phone": "1-800-565-3440", "text_or_chat": "Not stated", "hours": "24-hour", "website": "https://thans.ca/mikmaw-family-healing-centre/"}, {"scope": "NB", "category": "Information / referral", "service": "211 New Brunswick", "who_for": "Navigation to abuse and crisis services", "phone": "211", "text_or_chat": "Text/TTY 1-855-405-7446; chat", "hours": "24/7", "website": "https://nb.211.ca"}, {"scope": "NB", "category": "Sexual violence", "service": "Sexual Violence New Brunswick support line", "who_for": "Anyone affected by sexual violence", "phone": "506-454-0437", "text_or_chat": "Not stated", "hours": "5pm-8am daily", "website": "https://svnb.ca/en/get-help/"}, {"scope": "NB", "category": "Sexual violence", "service": "South East Sexual Assault Centre", "who_for": "Survivors of sexual violence", "phone": "1-844-853-0811", "text_or_chat": "Not stated", "hours": "24-hour", "website": "https://www2.gnb.ca/content/gnb/en/corporate/promo/sexual_violence/support.html"}, {"scope": "NB", "category": "Child / adult protection", "service": "Social Development protection reporting", "who_for": "Suspected child abuse or neglect; adults needing protection", "phone": "1-833-733-7835", "text_or_chat": "Not stated", "hours": "Business hours", "website": "https://www2.gnb.ca/content/gnb/en/departments/social_development/protection/questions.html"}, {"scope": "NB", "category": "Child / adult protection (after hours)", "service": "Emergency Social Services", "who_for": "Child or adult safety after hours", "phone": "1-800-442-9799", "text_or_chat": "Not stated", "hours": "Weeknights, weekends and holidays", "website": "https://www2.gnb.ca/content/gnb/en/departments/social_development/about_us/emergency_socialservices.html"}, {"scope": "NB", "category": "Mental health crisis", "service": "Provincial Addiction and Mental Health Helpline", "who_for": "Anyone needing support", "phone": "1-866-355-5550", "text_or_chat": "Not stated", "hours": "24/7", "website": "https://socialsupportsnb.ca"}, {"scope": "NB", "category": "Indigenous family violence", "service": "Gignoo Transition House", "who_for": "Indigenous women and children experiencing violence", "phone": "1-800-565-6878", "text_or_chat": "Not stated", "hours": "Not stated", "website": "https://www2.gnb.ca/content/gnb/en/departments/women/Violence_Prevention_and_Community_Partnerships/content/Support_Services_Resources_and_Counselling.html"}, {"scope": "PE", "category": "Domestic violence", "service": "Family Violence Prevention Services crisis line (Anderson House)", "who_for": "Anyone experiencing family violence", "phone": "1-800-240-9894; 902-892-0960", "text_or_chat": "Text either number; chat at fvps.ca", "hours": "24/7 phone", "website": "https://fvps.ca"}, {"scope": "PE", "category": "Sexual violence", "service": "PEI Rape and Sexual Assault Centre", "who_for": "Survivors of sexual violence", "phone": "1-888-368-8055; 902-368-8055", "text_or_chat": "Not stated", "hours": "Not stated", "website": "http://peirsac.org"}, {"scope": "PE", "category": "Child abuse reporting", "service": "Child Protection Services (business hours)", "who_for": "Anyone concerned a child is abused or neglected", "phone": "1-877-341-3101", "text_or_chat": "Email assessmentunit@ihis.org", "hours": "Business hours", "website": "https://www.princeedwardisland.ca/en/information/social-development-and-housing/child-protection"}, {"scope": "PE", "category": "Child abuse reporting (after hours)", "service": "Child Protection Services (after hours)", "who_for": "After hours; weekends; holidays", "phone": "1-800-341-6868", "text_or_chat": "Not stated", "hours": "After hours", "website": "https://www.princeedwardisland.ca/en/information/social-development-and-housing/child-protection"}, {"scope": "PE", "category": "Victim services", "service": "PEI Victim Services", "who_for": "Victims of crime", "phone": "Queens & Kings 902-368-4582; Prince 902-888-8218", "text_or_chat": "Email", "hours": "Not stated", "website": "https://www.princeedwardisland.ca/en/information/justice-and-public-safety/victim-services"}, {"scope": "PE", "category": "Seniors / adult abuse", "service": "Adult Protection Program (Health PEI)", "who_for": "Vulnerable adults incl. seniors", "phone": "Charlottetown 902-368-4790 (regional numbers on page)", "text_or_chat": "Not stated", "hours": "Weekdays 8am-4pm", "website": "https://www.princeedwardisland.ca/en/information/social-development-and-housing/supports-for-family-violence"}, {"scope": "PE", "category": "Mental health crisis", "service": "Mental Health and Addictions Access Line", "who_for": "Anyone needing mental health or crisis help", "phone": "1-833-553-6983", "text_or_chat": "Not stated", "hours": "24/7", "website": "https://princeedwardisland.ca/en/information/health-pei/mental-health-and-addictions-services"}, {"scope": "PE", "category": "Indigenous family violence", "service": "Chief Mary Bernard Memorial Women's Shelter", "who_for": "Women experiencing violence (Indigenous-run)", "phone": "1-855-297-2332", "text_or_chat": "Email", "hours": "24-hour crisis line", "website": "https://www.princeedwardisland.ca/en/information/social-development-and-housing/supports-for-family-violence"}, {"scope": "NL", "category": "Domestic violence", "service": "Domestic Violence Help Line", "who_for": "Anyone experiencing domestic violence", "phone": "1-888-709-7090", "text_or_chat": "Text same number", "hours": "24/7", "website": "https://www.gov.nl.ca/vpi/domestic-violence-help-line/"}, {"scope": "NL", "category": "Sexual violence", "service": "End Sexual Violence NL Support Line", "who_for": "Anyone affected by sexual violence", "phone": "1-800-726-2743", "text_or_chat": "Online chat", "hours": "24/7", "website": ""}, {"scope": "NL", "category": "Child abuse reporting", "service": "Child Protection reporting line", "who_for": "Anyone; children under 16 and youth 16-17", "phone": "1-833-552-2368", "text_or_chat": "Not stated", "hours": "Single number incl. after hours", "website": "https://www.gov.nl.ca/cssd/childprotection/report/"}, {"scope": "NL", "category": "Victim services", "service": "Victim Services Program", "who_for": "Victims of crime", "phone": "709-729-7970", "text_or_chat": "Email victimservices@gov.nl.ca", "hours": "Not stated", "website": "https://www.gov.nl.ca/victimservices/victim-services-offices/"}, {"scope": "NL", "category": "Seniors / adult abuse", "service": "Adult Protection reporting line", "who_for": "Abuse or neglect of an adult incl. seniors", "phone": "1-855-376-4957", "text_or_chat": "Not stated", "hours": "Not stated", "website": "https://www.gov.nl.ca/seniors/apa/"}, {"scope": "NL", "category": "Mental health crisis", "service": "HealthLine 811 (mental health crisis)", "who_for": "Anyone in mental health or addictions crisis", "phone": "811; 1-888-709-2929", "text_or_chat": "Not stated", "hours": "24/7", "website": "https://www.gov.nl.ca/hcs/findhealthservices/helplines/"}, {"scope": "NL", "category": "Shelter finder", "service": "Transition House Association of NL", "who_for": "Women and children leaving violence", "phone": "See individual shelters (e.g. Iris Kirby House 1-877-753-1492)", "text_or_chat": "Iris Kirby House text 782-821-7463", "hours": "24/7 shelter lines", "website": "http://www.thanl.org/find-shelter/"}];
+const PROV=[["AB","Alberta"],["BC","British Columbia"],["MB","Manitoba"],["NB","New Brunswick"],["NL","Newfoundland and Labrador"],["NS","Nova Scotia"],["NT","Northwest Territories"],["NU","Nunavut"],["ON","Ontario"],["PE","Prince Edward Island"],["QC","Quebec"],["SK","Saskatchewan"],["YT","Yukon"]];
+const CATKEYS={home:["domestic","family violence"],sexual:["sexual"],elder:["senior","elder","adult","older"],mind:["mental","suicide"],suicide:["suicide","mental"],traffic:["trafficking"],child:["child","youth"],women:["domestic","shelter","sexual"],alone:["referral","community","mental"],indig:["indigenous","mmiwg"],other:["referral","community","victim"]};
+const DIRCATS=[["all","All"],["violence","Violence at home"],["sexual","Sexual violence"],["child","Children and youth"],["senior","Older adults"],["mental","Mental health"],["trafficking","Trafficking"],["indigenous","Indigenous"],["victim","Victim services"],["referral","Information"]];
+const provName=c=>(PROV.find(p=>p[0]===c)||["","Canada"])[1];
+const catMatch=(r,keys)=>{const c=(r.category+" "+r.service).toLowerCase();return keys.some(k=>c.includes(k))};
+const dirList=rs=>rs.length?`<div class="svc">${rs.map(r=>`<div class="item ${/911|988/.test(r.phone)&&r.scope==="National"?"hot":""}"><div><h3>${esc(r.service)}</h3><p>${esc(r.who_for)}</p><p class="meta">${esc(r.text_or_chat&&!/^none|not stated|n\/a/i.test(r.text_or_chat)?r.text_or_chat+" · ":"")}${esc(r.hours)} · ${r.scope==="National"?"Canada-wide":provName(r.scope)}</p></div><div class="num">${esc(r.phone)}</div></div>`).join("")}</div>`:`<p class="muted">No line of this type is listed here. Call 211, or 911 in an emergency.</p>`;
+const provSel=()=>`<label class="provsel" for="prov">Your province or territory <select id="prov">${PROV.map(([c,n])=>`<option value="${c}" ${c===S.prov?"selected":""}>${n}</option>`).join("")}</select></label>`;
+const S={user:null,requests:[],adminSel:null,adminFilter:"All",cat:null,prov:"AB",dirCat:"all",alerted:false,kLesson:null,kDone:{},adults:["","",""],dial:"",taps:[],quiz:null};
+
+const CATS=[
+ {id:"home",t:"Abuse at home or in a relationship",s:"A partner, family member or someone you live with hurts, threatens or controls you.",urg:true,
+  steps:["If you are in danger now, call 911.","Talk to a trained advocate, any time, in many languages.","Find a shelter or safe place for you and your children.","Ask VaiRavvan to connect you with a local service."],
+  svc:[["Family Violence Info Line (Alberta)","24/7, 170+ languages","310-1818",1],["ShelterSafe","Shelters for women and children across Canada","sheltersafe.ca"],["211","Local services near you","211"]]},
+ {id:"sexual",t:"Sexual violence",s:"Something happened without your consent, recently or long ago.",urg:true,
+  steps:["If you are hurt or in danger, call 911 or go to an emergency department.","You decide what happens next, including whether to report.","A local sexual assault centre can support you. 211 can find one near you."],
+  svc:[["211","Find a sexual assault centre near you","211",1]]},
+ {id:"elder",t:"An older adult is being harmed",s:"Abuse, neglect or money being taken from an older person.",
+  steps:["If someone is in danger now, call 911.","Learn the signs of elder abuse and neglect.","Connect with local services for older adults."],
+  svc:[["Family Violence Info Line (Alberta)","Includes abuse of older adults","310-1818",1],["211","Seniors' services near you","211"]]},
+ {id:"mind",t:"Mental health and emotional distress",s:"Overwhelmed, anxious, low, or struggling to cope.",
+  steps:["You can talk to someone today. 988 is not only for suicide.","Find counselling and community mental-health services near you.","Ask VaiRavvan for help finding the right service."],
+  svc:[["9-8-8 Suicide Crisis Helpline","Call or text, 24/7","988",1],["211","Mental-health services near you","211"]]},
+ {id:"suicide",t:"Thoughts of suicide",s:"You are thinking about ending your life, or worried someone is.",urg:true,now:true,
+  steps:["Call or text 988 now. Someone will answer, any time.","If you might act on these thoughts, call 911.","Stay with someone you trust if you can."],
+  svc:[["9-8-8 Suicide Crisis Helpline","Call or text, 24/7","988",1],["Emergency","Immediate danger","911",1]]},
+ {id:"traffic",t:"Trafficking or exploitation",s:"Forced to work, sell sex, or hand over money or documents.",urg:true,
+  steps:["If you are in danger now, call 911.","The national hotline is confidential, 24/7, in 200+ languages.","You do not need proof to call."],
+  svc:[["Canadian Human Trafficking Hotline","Confidential, 24/7","1-833-900-1010",1]]},
+ {id:"child",t:"A child or youth may be unsafe",s:"You are worried about a child, or you are under 18 and need help.",urg:true,
+  steps:["If a child is in danger now, call 911.","In Alberta, anyone who believes a child needs protection must report it.","Young people can talk to Kids Help Phone any time."],
+  svc:[["Alberta Child Abuse Hotline","24/7 reporting line","1-800-387-5437",1],["Kids Help Phone","Call, or text CONNECT to 686868","1-800-668-6868"]]},
+ {id:"women",t:"Women's rights, health and safety",s:"Workplace harassment, housing, legal questions, health access.",
+  steps:["Tell us what you need help with.","We point you to the established service that handles it.","Ask VaiRavvan for a callback if you're unsure."],
+  svc:[["211","Women's services near you","211",1],["ShelterSafe","If you need a safe place","sheltersafe.ca"]]},
+ {id:"alone",t:"Loneliness and isolation",s:"Feeling cut off from people, community or support.",
+  steps:["Find community programs, drop-ins and peer groups.","Book an informal conversation with a VaiRavvan volunteer."],
+  svc:[["211","Community programs near you","211",1],["VaiRavvan listening ear","By appointment","587-225-3101"]]},
+ {id:"indig",t:"Support for Indigenous peoples",s:"Culturally grounded counselling and crisis support.",
+  steps:["Talk to a counsellor, 24/7, in English, French, Cree, Ojibway or Inuktitut (on request)."],
+  svc:[["Hope for Wellness Helpline","24/7, call or chat","1-855-242-3310",1]]},
+ {id:"other",t:"Something else, or not sure",s:"Tell us a little and we will help you find the right place.",
+  steps:["Start with 211 for any community or social service.","Or create a request and a VaiRavvan team member will help."],
+  svc:[["211","Any community or social service","211",1]]}
+];
+const catById=id=>CATS.find(c=>c.id===id);
+
+const now=Date.now(),H=3600e3;
+let ADMIN=[
+ {ref:"VR-2026-0137",who:"Lotus",cat:"home",help:"Connect me to a service",contact:"Text only",time:"Weekdays 10–2",lang:"Punjabi",urg:"Today",rcv:now-3*H,due:now+1*H,status:"New",pri:"High",note:"Need to leave soon, two kids.",kids:true,route:""},
+ {ref:"VR-2026-0136",who:"Sparrow",cat:"elder",help:"Callback",contact:"Phone call",time:"Evenings",lang:"English",urg:"This week",rcv:now-20*H,due:now-2*H,status:"Reviewed",pri:"Medium",note:"Worried about my father's finances.",kids:false,route:""},
+ {ref:"VR-2026-0135",who:"River",cat:"mind",help:"Information",contact:"In-app only",time:"Any time",lang:"English",urg:"Whenever",rcv:now-30*H,due:now+18*H,status:"New",pri:"Low",note:"",kids:false,route:""},
+ {ref:"VR-2026-0133",who:"Cedar",cat:"traffic",help:"Connect me to a service",contact:"Text only",time:"Mornings",lang:"Tagalog",urg:"Today",rcv:now-5*H,due:now-1*H,status:"New",pri:"High",note:"Employer kept my passport.",kids:false,route:""},
+ {ref:"VR-2026-0131",who:"Willow",cat:"alone",help:"Callback",contact:"Phone call",time:"Afternoons",lang:"Hindi",urg:"This week",rcv:now-50*H,due:now+22*H,status:"Routed",pri:"Low",note:"",kids:false,route:"VaiRavvan listening ear"},
+ {ref:"VR-2026-0129",who:"Juniper",cat:"women",help:"Information",contact:"In-app only",time:"Any time",lang:"French",urg:"Whenever",rcv:now-70*H,due:now-30*H,status:"Closed",pri:"Low",note:"",kids:false,route:"211"}
+];
+const PARTNERS=["Family Violence Info Line (310-1818)","211","Partner shelter (to be confirmed)","Partner counselling agency (to be confirmed)","Canadian Human Trafficking Hotline","Alberta Child Abuse Hotline","VaiRavvan listening ear"];
+
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const app=document.getElementById("app");
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2600)}
+const svcList=svc=>`<div class="svc">${svc.map(([n,d,num,hot])=>`<div class="item ${hot?"hot":""}"><div><h3>${n}</h3><p>${d}</p></div><div class="num">${num}</div></div>`).join("")}</div>`;
+const fmtT=t=>new Date(t).toLocaleString("en-CA",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+function due(t){const h=Math.round((t-Date.now())/H);return h<0?`<span class="over">${-h} h overdue</span>`:`in ${h} h`}
+
+const V={
+home:()=>`
+<section class="hero"><div class="wrap">
+  <img class="logo" src="${LOGO}" alt="VaiRavvan" width="640" height="289">
+  <p class="tag">Your dignity. Your choices. Your next step.</p>
+  <p class="lede">The fastest way to the right help in Canada for abuse, violence, exploitation, mental health and isolation. You don't need an account to get help.</p>
+  <div class="row"><a class="btn now" href="#now">I need help now</a><a class="btn ghost" href="#find">Find the right help</a></div>
+</div></section>
+<section class="block"><div class="wrap">
+  <div class="doors">
+    <a class="door d1" href="#now"><span class="k">Right now · no sign-in</span><h3>Emergency and crisis lines</h3><p>One tap to 911, 988 and 24/7 lines with trained people ready to answer.</p><span class="go">See lines →</span></a>
+    <a class="door d2" href="#find"><span class="k">Guided · no sign-in</span><h3>Tell us what's happening</h3><p>Choose your situation and get clear next steps and the services that handle it.</p><span class="go">Choose a situation →</span></a>
+    <a class="door d3" href="#kids"><span class="k">For children · with a grown-up</span><h3>VaiRavvan Kids</h3><p>Gentle lessons that help children know their body belongs to them and how to reach help.</p><span class="go">Start learning →</span></a>
+  </div>
+  <div class="divider" aria-hidden="true"><i></i></div>
+  <div class="stack" style="max-width:62ch;margin-inline:auto;text-align:center">
+    <h2>Built to keep you safe while you look for help</h2>
+    <p class="muted">This website asks for nothing and stores nothing about you. The Leave button at the top takes you away instantly, or press Esc twice. If someone checks your device, use a private window next time</p>
+  </div>
+</div></section>`,
+
+now:()=>{const local=DIR.filter(r=>r.scope===S.prov&&/24/.test(r.hours));return `
+<section class="block"><div class="wrap stack" style="max-width:52rem">
+  <p class="eyebrow">Emergency</p><h1>Get help now</h1>
+  <div class="sos">
+    <a class="sosbtn" href="tel:911">Call 911</a>
+    <p>Your phone will ask you to confirm the call. <b>If you can't speak, stay on the line</b> so the operator can listen and send help.</p>
+    <p class="hint">Want someone you trust to know where you are? Your phone's Emergency SOS can text your emergency contacts your location. See how to turn it on below.</p>
+  </div>
+  <div class="two">
+    <div class="card"><h3>Can't talk?</h3><ul>
+      <li>Call 911 and leave the line open.</li>
+      <li>Thinking about suicide? Text 988.</li>
+      <li>On a video call, use the Signal for Help: palm forward, tuck your thumb, close your fingers over it.</li>
+      <li>Many provincial lines below also take texts.</li></ul></div>
+    <div class="card"><h3>Your phone's hidden SOS</h3><ul>
+      <li><b>iPhone:</b> press the side button 5 times, or hold the side button and a volume button. It calls 911 and texts your emergency contacts.</li>
+      <li><b>Android:</b> press the power button 5 times. It calls 911 and can share your live location.</li>
+      <li>Turn it on now, before you need it.</li></ul></div>
+  </div>
+  <h2>Canada-wide, 24/7</h2>
+  ${dirList(DIR.filter(r=>r.scope==="National"&&/^(911|988|1-800-668-6868|1-833-900-1010|1-855-242-3310|1-844-413-6649)$/.test(r.phone)))}
+  <h2>24/7 lines where you are</h2>${provSel()}
+  ${dirList(local)}
+  <div class="row"><a class="btn ghost" href="#directory">See every service in ${provName(S.prov)} →</a></div>
+</div></section>`},
+
+directory:()=>{const keys=S.dirCat==="all"?null:(S.dirCat==="violence"?["domestic","family violence","shelter"]:[S.dirCat]);const rs=DIR.filter(r=>(r.scope===S.prov||r.scope==="National")&&(!keys||catMatch(r,keys)));return `
+<section class="block"><div class="wrap stack" style="max-width:56rem">
+  <p class="eyebrow">Directory · ${DIR.length} services</p><h1>Help across Canada</h1>
+  <p class="muted">Established services in your province or territory, plus Canada-wide lines. These services are independent of VaiRavvan. Details were last checked in October 2026. If a number does not connect, call 211, or 911 in an emergency.</p>
+  ${provSel()}
+  <div class="dirfilters" role="group" aria-label="Type of help">${DIRCATS.map(([k,n])=>`<button type="button" data-dircat="${k}" aria-pressed="${k===S.dirCat}">${n}</button>`).join("")}</div>
+  <p class="hint">${rs.length} services shown</p>
+  ${dirList(rs)}
+</div></section>`},
+
+find:()=>`
+<section class="block"><div class="wrap">
+  <p class="eyebrow">Find help</p><h1>What's happening?</h1>
+  <p class="muted" style="margin-top:.6rem;max-width:60ch">Choose what fits best. You can choose again at any time, and you don't need to explain anything.</p>
+  <div class="cats">${CATS.map(c=>`<button class="cat" type="button" data-cat="${c.id}">${c.urg?'<span class="chip urg">Can be urgent</span>':""}<b>${c.t}</b><span>${c.s}</span></button>`).join("")}</div>
+</div></section>`,
+
+path:()=>{const c=catById(S.cat)||CATS[0];return `
+<section class="block"><div class="wrap stack" style="max-width:50rem">
+  <a href="#find">← All situations</a>
+  <p class="eyebrow">Your situation</p><h1>${c.t}</h1>
+  ${c.now?"":`<div class="check" id="safecheck"><h3>First, are you safe right now?</h3><div class="row"><button class="btn now" data-safe="no">No, I'm in danger</button><button class="btn ghost" data-safe="yes">Yes, I'm safe for now</button></div></div>`}
+  <div id="pathbody" ${c.now?"":"hidden"} class="stack">
+    <h2>Next steps</h2><ol class="steps">${c.steps.map(s=>`<li><span>${s}</span></li>`).join("")}</ol>
+    <h2 style="margin-top:.8rem">Who can help</h2>${svcList(c.svc)}
+    <h2 style="margin-top:.8rem">In your province or territory</h2>${provSel()}${dirList(DIR.filter(r=>r.scope===S.prov&&catMatch(r,CATKEYS[c.id]||[])))}
+    <div class="req stack"><h3>Not sure where to start?</h3><p class="muted">211 can connect you with local services any time, in more than 150 languages. If you are in danger, call 911.</p></div>
+  </div>
+</div></section>`},
+
+kids:()=>{const L=[
+ ["body","My body belongs to me","Safe touch, unsafe touch, and no yucky secrets."],
+ ["adults","My safe grown-ups","Choose three grown-ups you can always tell."],
+ ["call","Practise calling 911","A pretend phone to practise. It never really calls."],
+ ["sos","The secret button","Five quick presses to call for help."],
+ ["signal","Signal for Help","Ask for help with just your hand."],
+ ["khp","Someone to talk to","Kids Help Phone is there any time."]];
+ const done=Object.keys(S.kDone).length;
+ const moon=`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="#ffffff" stroke="#f0d9c0" stroke-width="3"/><path d="M78 22a42 42 0 1 0 0 76a34 34 0 1 1 0-76z" fill="#3f4fd1"/><circle cx="52" cy="54" r="4" fill="#fff"/><path d="M45 70q8 7 16 0" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="44" cy="64" r="4" fill="#ff9fb0" opacity=".8"/></svg>`;
+ const star=on=>`<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="${on?"#e46a1f":"#f0d9c0"}"/></svg>`;
+ const P={
+ body:()=>`<h2>My body belongs to me</h2><ul>
+   <li>The parts of your body that a swimsuit covers are <b>private</b>.</li>
+   <li>Nobody should touch them, look at them, or take pictures of them, except a doctor with your grown-up there.</li>
+   <li>If someone asks you to keep a secret about touching, <b>tell a safe grown-up</b>. You won't be in trouble.</li>
+   <li>It is <b>never</b> your fault.</li></ul>
+   <h3>Quick question</h3><p>Someone says, "This is our special secret. Don't tell anyone." What do you do?</p>
+   <div class="choice"><button class="kbtn alt" data-quiz="keep" type="button">Keep the secret</button><button class="kbtn" data-quiz="tell" type="button">Tell a safe grown-up</button></div>
+   ${S.quiz==="tell"?`<p class="feedback">Yes! Surprises are fun and get told soon. Secrets that feel yucky must be told.</p>`:S.quiz==="keep"?`<p class="feedback" style="color:#b0461a">Let's think again. If a secret feels yucky or scary, telling a safe grown-up is always right.</p>`:""}`,
+ adults:()=>`<h2>My safe grown-ups</h2><p class="muted">Pick three grown-ups you trust. If one doesn't listen, tell the next one.</p>
+   ${[0,1,2].map(i=>`<label>Safe grown-up ${i+1}<input type="text" id="ad${i}" value="${esc(S.adults[i])}" placeholder="${["Mom or Dad","My teacher","My aunt"][i]}" autocomplete="off"></label>`).join("")}
+   <button class="kbtn" id="saveadults" type="button">These are my safe grown-ups</button>
+   ${S.adults.filter(Boolean).length===3?`<p class="feedback">Great! ${S.adults.map(esc).join(", ")}. (Practice only. Names are not saved.)</p>`:""}`,
+ call:()=>`<h2>Practise calling 911</h2><p class="practice">Practice phone: this never makes a real call.</p>
+   <p class="muted">Call 911 when someone is hurt, in danger, or someone is trying to take you. Press 9, 1, 1, then the green button.</p>
+   <div class="phone"><div class="scr">${S.dial==="CALL"?`<small>"911, what's your emergency?"<br>Say: your name, where you are, and what is happening. Stay on the phone.</small>`:esc(S.dial||" ")}</div>
+   <div class="pad">${["1","2","3","4","5","6","7","8","9","clr","0","call"].map(k=>`<button type="button" data-key="${k}" class="${k==="call"?"call":k==="clr"?"clr":""}" aria-label="${k==="call"?"Call":k==="clr"?"Clear":k}">${k==="call"?"Call":k==="clr"?"Clear":k}</button>`).join("")}</div></div>
+   ${S.dial==="WRONG"?`<p class="feedback" style="color:#b0461a">Try again: 9, 1, 1.</p>`:S.dial==="CALL"?`<p class="feedback">You did it! In real life, stay on the phone. If you can't talk, don't hang up.</p>`:""}`,
+ sos:()=>`<h2>The secret button</h2><p class="practice">Practice only: tapping here never calls anyone.</p>
+   <p class="muted">On most phones, pressing the side button <b>5 times fast</b> calls 911. Ask a grown-up to turn it on. Use it only when you are really in danger.</p>
+   <div class="sidebtn"><div class="body">${Math.min(S.taps.length,5)}/5</div><button type="button" id="side" aria-label="Side button, tap 5 times fast"></button></div>
+   ${S.taps.length>=5?`<p class="feedback">Five fast taps! That's how the real phone knows you need help.</p>`:`<p class="muted" style="text-align:center">Tap the orange button 5 times fast.</p>`}`,
+ signal:()=>`<h2>Signal for Help</h2><p class="muted">If you can't say it out loud, you can ask for help with your hand, on a video call or in person.</p>
+   <div class="hand"><div><i>1</i>Show your palm</div><div><i>2</i>Tuck your thumb in</div><div><i>3</i>Close your fingers over your thumb</div></div>
+   <p>If you see someone do this, tell a grown-up right away.</p>`,
+ khp:()=>`<h2>Someone to talk to</h2><p>Kids Help Phone is free, and someone is there day and night. You can talk about anything.</p>
+   <ul><li>Call <b>1-800-668-6868</b></li><li>Text <b>CONNECT</b> to <b>686868</b></li><li>If you are in danger now, call <b>911</b>.</li></ul>`};
+ return `<div class="kids"><div class="wrap">
+  <div class="khero">${moon}<div class="stack" style="gap:.6rem"><p class="eyebrow" style="color:#5b5480">VaiRavvan Kids · ages 5 to 12, with a grown-up</p><h1>Hi! I'm Chandra.</h1><p class="muted">Let's learn six ways to stay safe. Every lesson you finish earns a star.</p><div class="stars">${L.map(l=>star(S.kDone[l[0]])).join("")}<span>${done} of 6</span></div></div></div>
+  <div class="lessons">${L.map(([k,n,d])=>`<button class="lesson" type="button" data-lesson="${k}" aria-pressed="${S.kLesson===k}"><b>${n}</b><span>${d}</span>${S.kDone[k]?'<span class="done">Star earned</span>':""}</button>`).join("")}</div>
+  ${S.kLesson?`<div class="kpanel" id="kpanel">${P[S.kLesson]()}<div class="row"><button class="kbtn sun" id="kdone" type="button">${S.kDone[S.kLesson]?"Done":"I learned this!"}</button><button class="kbtn alt" id="kclose" type="button">Back to lessons</button></div></div>`:""}
+  <div class="grownups"><h2>For grown-ups</h2><p class="muted">VaiRavvan Kids asks children for no personal information. Set it up together, practise often, and keep the conversation open. These lessons are being reviewed with child-protection specialists and may change.</p></div>
+ </div></div>`},
+
+partners:()=>`
+<section class="block"><div class="wrap stack" style="max-width:48rem">
+  <p class="eyebrow">For organisations and authorities</p><h1>Let's protect people together</h1>
+  <p>VaiRavvan can only do good if it is shaped by the people who already care for survivors, children and elders every day. If you work with a government ministry, a police service, a shelter, a helpline, a health service, a school or a community organisation, we would be honoured to hear from you.</p>
+  <div class="two">
+    <div class="card"><h3>Guide us</h3><p class="muted">Tell us where people fall through the cracks, and how VaiRavvan can help them reach you more safely.</p></div>
+    <div class="card"><h3>Correct us</h3><p class="muted">If anything we list about your service is wrong or out of date, tell us and we will fix it right away.</p></div>
+    <div class="card"><h3>Review with us</h3><p class="muted">Help us check our words, our safety features and our lessons for children.</p></div>
+    <div class="card"><h3>Walk with us</h3><p class="muted">Explore a partnership, so that people in danger can reach the right help even faster.</p></div>
+  </div>
+  <div class="sos" style="border-color:var(--line)">
+    <h2>Write to us</h2>
+    <p class="num" style="font-family:var(--display);font-size:1.4rem;user-select:all">devvrat.nair@dragonfruittechnologies.com</p>
+    <p class="muted">Devvrat Nair, Founder, Dragonfruit Technologies. Every message is read personally.</p>
+  </div>
+  <p class="hint">This address is for organisations. If you need help yourself, please call 911 in an emergency, or see <a href="#now">Help now</a>.</p>
+</div></section>`,
+
+about:()=>`
+<section class="block"><div class="wrap stack" style="max-width:48rem">
+  <p class="eyebrow">About VaiRavvan</p><h1>Why we are here</h1>
+  <p>Somewhere tonight, someone is deciding whether it is safe to ask for help. VaiRavvan exists so that no one in that moment feels alone or lost. We gently point people toward the caring, established services that can help them, as quickly as we can.</p>
+  <p class="muted">VaiRavvan is a corporate social responsibility initiative of Dragonfruit Technologies, and it is still in development. It is not a registered charity and accepts no donations.</p>
+  <div class="divider" aria-hidden="true"><i></i></div>
+  <h2>What we hold to</h2>
+  <div class="two">
+    <div class="card"><h3>Clarity over noise</h3><p class="muted">Plain, gentle words that lead to the right help.</p></div>
+    <div class="card"><h3>Dignity over exposure</h3><p class="muted">No one has to share or prove their story here.</p></div>
+    <div class="card"><h3>Responsibility before reach</h3><p class="muted">We grow carefully, guided by people with real expertise.</p></div>
+    <div class="card"><h3>Never in place of experts</h3><p class="muted">We lead people to services. We never stand in their place.</p></div>
+  </div>
+  <h2>What VaiRavvan is not</h2>
+  <p class="muted">VaiRavvan is not an emergency service or a crisis line. It does not provide shelter, counselling, legal advice or case management. If you are in danger, please call 911.</p>
+  <h2>A listening ear</h2>
+  <p>Volunteers offer informal conversations by phone, by appointment and when available, at <b>587-225-3101</b>.</p>
+  <p class="muted">This is not a crisis line, and messages are not monitored all the time. It is not counselling or professional advice. Please don't share sensitive details, documents or other people's information.</p>
+  <h2>Your privacy</h2>
+  <p class="muted">This website has no forms, accounts, cookies, analytics or tracking, and it stores nothing about you. The services we list are independent, and their privacy practices vary. Hosting and phone providers may keep basic records such as IP addresses or call logs, so we cannot promise complete anonymity.</p>
+  <h2>Contact</h2>
+  <p class="muted">devvrat.nair@dragonfruittechnologies.com</p>
+</div></section>`
+};
+
+function render(){
+  let v=(location.hash||"#home").slice(1); if(!V[v]) v="home";
+  app.innerHTML=V[v]();
+  document.querySelectorAll(".navlinks a").forEach(a=>{if(a.getAttribute("href")==="#"+v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  window.scrollTo(0,0); bind(v); bind2();
+}
+function bind(v){
+  app.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{S.cat=b.dataset.cat;location.hash="path";if(location.hash==="#path")render()});
+  app.querySelectorAll("[data-safe]").forEach(b=>b.onclick=()=>{if(b.dataset.safe==="no"){location.hash="now"}else{document.getElementById("safecheck").hidden=true;document.getElementById("pathbody").hidden=false}});
+  const fj=document.getElementById("f-join"); if(fj) fj.onsubmit=e=>{e.preventDefault();const c=document.getElementById("j-code").value.trim(),p=document.getElementById("j-pw").value,er=document.getElementById("j-err");
+    if(!c){er.textContent="Choose a codename to continue.";er.hidden=false;return} if(p.length<10){er.textContent="Use a password of at least 10 characters.";er.hidden=false;return}
+    S.user=c; if(document.getElementById("j-disg").checked) document.title="Notes"; toast("Account created"); location.hash="request"};
+  const fi=document.getElementById("f-in"); if(fi) fi.onsubmit=e=>{e.preventDefault();S.user=document.getElementById("i-code").value.trim()||"Moonlight";toast("Signed in");location.hash="mine"};
+  const fr=document.getElementById("f-req"); if(fr) fr.onsubmit=e=>{e.preventDefault();const er=document.getElementById("r-err");
+    if(!document.getElementById("r-ack").checked){er.textContent="Please confirm you understand this is not emergency help.";er.hidden=false;return}
+    const g=n=>fr.querySelector(`input[name="${n}"]:checked`).value; const n=String(138+S.requests.length).padStart(4,"0");
+    const r={ref:"VR-2026-"+n,who:S.user,cat:document.getElementById("r-cat").value,help:g("r-help"),contact:g("r-contact"),time:document.getElementById("r-time").value,lang:document.getElementById("r-lang").value,urg:g("r-urg"),rcv:Date.now(),due:Date.now()+(g("r-urg")==="Today"?4:48)*H,status:"New",pri:g("r-urg")==="Today"||catById(document.getElementById("r-cat").value).urg?"High":"Medium",note:document.getElementById("r-note").value.trim(),kids:document.getElementById("r-cat").value==="child",route:""};
+    S.requests.unshift(r); ADMIN.unshift(Object.assign({},r)); location.hash="done"};
+  const so=document.getElementById("signout"); if(so) so.onclick=()=>{S.user=null;document.title="VaiRavvan";toast("Signed out");location.hash="home"};
+  app.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{S.adminFilter=b.dataset.filter;render()});
+  app.querySelectorAll("tr[data-ref]").forEach(tr=>{const go=()=>{S.adminSel=tr.dataset.ref;const y=window.scrollY;render();window.scrollTo(0,y)};tr.onclick=go;tr.onkeydown=e=>{if(e.key==="Enter")go()}});
+  app.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{const r=ADMIN.find(x=>x.ref===S.adminSel);r.pri=document.getElementById("a-pri").value;const a=b.dataset.act;
+    if(a==="review"){r.status="Reviewed";toast("Marked reviewed")}
+    if(a==="route"){const to=document.getElementById("a-route").value;if(!to){toast("Choose a service to route to");return}r.route=to;r.status="Routed";toast("Routed to "+to)}
+    if(a==="close"){r.status="Closed";toast("Request closed")}
+    const mine=S.requests.find(x=>x.ref===r.ref); if(mine){mine.status=r.status} const y=window.scrollY;render();window.scrollTo(0,y)});
+}
+function bind2(){
+  const pv=document.getElementById("prov"); if(pv) pv.onchange=()=>{S.prov=pv.value;const y=window.scrollY;render();window.scrollTo(0,y)};
+  const cb=document.getElementById("callbtn"); if(cb) cb.onclick=()=>{S.called=true;const y=window.scrollY;render();window.scrollTo(0,y)};
+  const ab=document.getElementById("alertbtn"); if(ab) ab.onclick=()=>{S.alerted=true;const y=window.scrollY;render();window.scrollTo(0,y)};
+  app.querySelectorAll("[data-dircat]").forEach(b=>b.onclick=()=>{S.dirCat=b.dataset.dircat;const y=window.scrollY;render();window.scrollTo(0,y)});
+  const stay=f=>{const y=window.scrollY;f();render();window.scrollTo(0,y)};
+  app.querySelectorAll("[data-lesson]").forEach(b=>b.onclick=()=>{S.kLesson=b.dataset.lesson;S.quiz=null;S.dial="";S.taps=[];render();const p=document.getElementById("kpanel");if(p)p.scrollIntoView({block:"start"})});
+  const kd=document.getElementById("kdone"); if(kd) kd.onclick=()=>stay(()=>{S.kDone[S.kLesson]=true});
+  const kc=document.getElementById("kclose"); if(kc) kc.onclick=()=>stay(()=>{S.kLesson=null});
+  app.querySelectorAll("[data-quiz]").forEach(b=>b.onclick=()=>stay(()=>{S.quiz=b.dataset.quiz}));
+  const sa=document.getElementById("saveadults"); if(sa) sa.onclick=()=>stay(()=>{S.adults=[0,1,2].map(i=>document.getElementById("ad"+i).value.trim())});
+  app.querySelectorAll("[data-key]").forEach(b=>b.onclick=()=>stay(()=>{const k=b.dataset.key;let d=/^[0-9]*$/.test(S.dial)?S.dial:"";
+    if(k==="clr")d="";else if(k==="call")d=(d==="911")?"CALL":"WRONG";else d=(d+k).slice(0,6);S.dial=d}));
+  const sd=document.getElementById("side"); if(sd) sd.onclick=()=>stay(()=>{const n=Date.now();S.taps=S.taps.filter(x=>n-x<2500);S.taps.push(n)});
+}
+window.addEventListener("hashchange",render);
+const EXIT=document.getElementById("exit");EXIT.addEventListener("click",e=>{e.preventDefault();location.replace(EXIT.href)});
+let lastEsc=0;document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;const t=Date.now();if(t-lastEsc<600)document.getElementById("exit").click();lastEsc=t});
+render();
+</script>
+
+</body>
+</html>
