@@ -112,6 +112,13 @@ section.block{padding-block:clamp(2.5rem,5vw,4rem)}
 .svc .item p{color:var(--muted);font-size:.95rem}
 .svc .num{font-family:var(--display);font-size:1.5rem;letter-spacing:.03em;font-variant-numeric:tabular-nums;user-select:all;white-space:nowrap}
 .svc .item.hot{border-color:var(--saffron)}
+.svc .acts{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:flex-end;align-items:center}
+.svc a.num{color:inherit;text-decoration:none;border-radius:10px;padding:.1rem .2rem}
+.svc a.num:hover{text-decoration:underline;text-underline-offset:4px}
+.svc .callb{display:inline-flex;align-items:center;gap:.4rem;min-height:2.75rem;padding:.5rem 1rem;border-radius:999px;font-weight:700;text-decoration:none;background:var(--neel-deep);color:#fff;white-space:nowrap}
+.svc .item.hot .callb{background:var(--saffron);color:var(--saffron-ink)}
+.svc .webb{display:inline-flex;align-items:center;min-height:2.75rem;padding:.5rem .9rem;border-radius:999px;font-weight:700;text-decoration:none;border:2px solid var(--line);color:var(--ink);white-space:nowrap}
+@media (max-width:560px){.svc .acts{justify-content:flex-start}}
 .svc .item.hot .num{color:var(--saffron)}
 @media (max-width:560px){.svc .item{grid-template-columns:1fr}}
 
@@ -201,13 +208,15 @@ footer{border-top:1px solid var(--line);margin-top:2rem}
 .kids .muted{color:var(--k-muted)}
 .kids a{color:var(--k-blue)}
 .kids .khero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.5rem;align-items:center;padding-block:clamp(2rem,5vw,3.5rem) 1rem}
-.kids .khero svg{width:clamp(110px,18vw,170px);height:auto}
+.kids .devframe{width:clamp(170px,24vw,250px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 50% 42%,#33429a,#0b0e22 72%);overflow:hidden;display:flex;align-items:flex-end;justify-content:center;box-shadow:0 0 0 6px #fff,0 10px 40px rgba(63,79,209,.45)}
+.kids .devframe img{width:96%;height:auto;display:block}
 @media (max-width:560px){.kids .khero{grid-template-columns:1fr;justify-items:center;text-align:center}}
 .kids .stars{display:flex;gap:.4rem;align-items:center;font-weight:700;color:var(--k-muted);font-size:1rem}
 .kids .star{width:22px;height:22px}
 .lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:1rem;padding-bottom:1.5rem}
 .lesson{background:var(--k-card);border:2px solid var(--k-line);border-radius:22px;padding:1.2rem;text-align:left;font:inherit;color:var(--k-ink);cursor:pointer;display:grid;gap:.4rem;align-content:start}
 .lesson:hover,.lesson[aria-pressed="true"]{border-color:var(--k-blue)}
+.lesson .sp{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--k-sun)}
 .lesson b{font-family:var(--display);font-size:1.3rem;font-weight:400}
 .lesson span{color:var(--k-muted);font-size:1rem}
 .lesson .done{color:var(--k-mint);font-weight:700;font-size:.9rem}
@@ -274,20 +283,20 @@ const CATKEYS={home:["domestic","family violence"],sexual:["sexual"],elder:["sen
 const DIRCATS=[["all","All"],["violence","Violence at home"],["sexual","Sexual violence"],["child","Children and youth"],["senior","Older adults"],["mental","Mental health"],["trafficking","Trafficking"],["indigenous","Indigenous"],["victim","Victim services"],["referral","Information"]];
 const provName=c=>(PROV.find(p=>p[0]===c)||["","Canada"])[1];
 const catMatch=(r,keys)=>{const c=(r.category+" "+r.service).toLowerCase();return keys.some(k=>c.includes(k))};
-const dirList=rs=>rs.length?`<div class="svc">${rs.map(r=>`<div class="item ${/911|988/.test(r.phone)&&r.scope==="National"?"hot":""}"><div><h3>${esc(r.service)}</h3><p>${esc(r.who_for)}</p><p class="meta">${esc(r.text_or_chat&&!/^none|not stated|n\/a/i.test(r.text_or_chat)?r.text_or_chat+" · ":"")}${esc(r.hours)} · ${r.scope==="National"?"Canada-wide":provName(r.scope)}</p></div><div class="num">${esc(r.phone)}</div></div>`).join("")}</div>`:`<p class="muted">No line of this type is listed here. Call 211, or 911 in an emergency.</p>`;
+const dirList=rs=>rs.length?`<div class="svc">${rs.map(r=>`<div class="item ${/911|988/.test(r.phone)&&r.scope==="National"?"hot":""}"><div><h3>${esc(r.service)}</h3><p>${esc(r.who_for)}</p><p class="meta">${esc(r.text_or_chat&&!/^none|not stated|n\/a/i.test(r.text_or_chat)?r.text_or_chat+" · ":"")}${esc(r.hours)} · ${r.scope==="National"?"Canada-wide":provName(r.scope)}</p></div>${acts(r.phone,r.website,r.service)}</div>`).join("")}</div>`:`<p class="muted">No line of this type is listed here. Call 211, or 911 in an emergency.</p>`;
 const provSel=()=>`<label class="provsel" for="prov">Your province or territory <select id="prov">${PROV.map(([c,n])=>`<option value="${c}" ${c===S.prov?"selected":""}>${n}</option>`).join("")}</select></label>`;
-const S={user:null,requests:[],adminSel:null,adminFilter:"All",cat:null,prov:"AB",dirCat:"all",alerted:false,kLesson:null,kDone:{},adults:["","",""],dial:"",taps:[],quiz:null};
+const S={cat:null,prov:"AB",dirCat:"all",alerted:false,kLesson:null,kDone:{},adults:["","",""],dial:"",taps:[],quiz:null};
 
 const CATS=[
  {id:"home",t:"Abuse at home or in a relationship",s:"A partner, family member or someone you live with hurts, threatens or controls you.",urg:true,
   steps:["If you are in danger now, call 911.","Talk to a trained advocate, any time, in many languages.","Find a shelter or safe place for you and your children.","Ask VaiRavvan to connect you with a local service."],
-  svc:[["Family Violence Info Line (Alberta)","24/7, 170+ languages","310-1818",1],["ShelterSafe","Shelters for women and children across Canada","sheltersafe.ca"],["211","Local services near you","211"]]},
+  svc:[["Family Violence Info Line (Alberta)","24/7, 170+ languages","310-1818",1,"AB"],["ShelterSafe","Shelters for women and children across Canada","sheltersafe.ca"],["211","Local services near you","211"]]},
  {id:"sexual",t:"Sexual violence",s:"Something happened without your consent, recently or long ago.",urg:true,
   steps:["If you are hurt or in danger, call 911 or go to an emergency department.","You decide what happens next, including whether to report.","A local sexual assault centre can support you. 211 can find one near you."],
   svc:[["211","Find a sexual assault centre near you","211",1]]},
  {id:"elder",t:"An older adult is being harmed",s:"Abuse, neglect or money being taken from an older person.",
   steps:["If someone is in danger now, call 911.","Learn the signs of elder abuse and neglect.","Connect with local services for older adults."],
-  svc:[["Family Violence Info Line (Alberta)","Includes abuse of older adults","310-1818",1],["211","Seniors' services near you","211"]]},
+  svc:[["Family Violence Info Line (Alberta)","Includes abuse of older adults","310-1818",1,"AB"],["211","Seniors' services near you","211"]]},
  {id:"mind",t:"Mental health and emotional distress",s:"Overwhelmed, anxious, low, or struggling to cope.",
   steps:["You can talk to someone today. 988 is not only for suicide.","Find counselling and community mental-health services near you.","Ask VaiRavvan for help finding the right service."],
   svc:[["9-8-8 Suicide Crisis Helpline","Call or text, 24/7","988",1],["211","Mental-health services near you","211"]]},
@@ -298,8 +307,8 @@ const CATS=[
   steps:["If you are in danger now, call 911.","The national hotline is confidential, 24/7, in 200+ languages.","You do not need proof to call."],
   svc:[["Canadian Human Trafficking Hotline","Confidential, 24/7","1-833-900-1010",1]]},
  {id:"child",t:"A child or youth may be unsafe",s:"You are worried about a child, or you are under 18 and need help.",urg:true,
-  steps:["If a child is in danger now, call 911.","In Alberta, anyone who believes a child needs protection must report it.","Young people can talk to Kids Help Phone any time."],
-  svc:[["Alberta Child Abuse Hotline","24/7 reporting line","1-800-387-5437",1],["Kids Help Phone","Call, or text CONNECT to 686868","1-800-668-6868"]]},
+  steps:["If a child is in danger now, call 911.","If you believe a child needs protection, report it to child protection services or the police. Your province's line is listed below.","Young people can talk to Kids Help Phone any time."],
+  svc:[["Alberta Child Abuse Hotline","24/7 reporting line","1-800-387-5437",1,"AB"],["Kids Help Phone","Call, or text CONNECT to 686868","1-800-668-6868"]]},
  {id:"women",t:"Women's rights, health and safety",s:"Workplace harassment, housing, legal questions, health access.",
   steps:["Tell us what you need help with.","We point you to the established service that handles it.","Ask VaiRavvan for a callback if you're unsure."],
   svc:[["211","Women's services near you","211",1],["ShelterSafe","If you need a safe place","sheltersafe.ca"]]},
@@ -315,30 +324,21 @@ const CATS=[
 ];
 const catById=id=>CATS.find(c=>c.id===id);
 
-const now=Date.now(),H=3600e3;
-let ADMIN=[
- {ref:"VR-2026-0137",who:"Lotus",cat:"home",help:"Connect me to a service",contact:"Text only",time:"Weekdays 10–2",lang:"Punjabi",urg:"Today",rcv:now-3*H,due:now+1*H,status:"New",pri:"High",note:"Need to leave soon, two kids.",kids:true,route:""},
- {ref:"VR-2026-0136",who:"Sparrow",cat:"elder",help:"Callback",contact:"Phone call",time:"Evenings",lang:"English",urg:"This week",rcv:now-20*H,due:now-2*H,status:"Reviewed",pri:"Medium",note:"Worried about my father's finances.",kids:false,route:""},
- {ref:"VR-2026-0135",who:"River",cat:"mind",help:"Information",contact:"In-app only",time:"Any time",lang:"English",urg:"Whenever",rcv:now-30*H,due:now+18*H,status:"New",pri:"Low",note:"",kids:false,route:""},
- {ref:"VR-2026-0133",who:"Cedar",cat:"traffic",help:"Connect me to a service",contact:"Text only",time:"Mornings",lang:"Tagalog",urg:"Today",rcv:now-5*H,due:now-1*H,status:"New",pri:"High",note:"Employer kept my passport.",kids:false,route:""},
- {ref:"VR-2026-0131",who:"Willow",cat:"alone",help:"Callback",contact:"Phone call",time:"Afternoons",lang:"Hindi",urg:"This week",rcv:now-50*H,due:now+22*H,status:"Routed",pri:"Low",note:"",kids:false,route:"VaiRavvan listening ear"},
- {ref:"VR-2026-0129",who:"Juniper",cat:"women",help:"Information",contact:"In-app only",time:"Any time",lang:"French",urg:"Whenever",rcv:now-70*H,due:now-30*H,status:"Closed",pri:"Low",note:"",kids:false,route:"211"}
-];
-const PARTNERS=["Family Violence Info Line (310-1818)","211","Partner shelter (to be confirmed)","Partner counselling agency (to be confirmed)","Canadian Human Trafficking Hotline","Alberta Child Abuse Hotline","VaiRavvan listening ear"];
-
+const H=3600e3;
+const telOf=p=>{const m=String(p||"").match(/(\d{3}-\d{3}-\d{4}|\d-\d{3}-\d{3}-\d{4}|\b310-\d{4}\b|\b9-?1-?1\b|\b988\b|\b211\b)/);return m?m[1].replace(/-/g,""):null};
+const acts=(phone,web,label)=>{const t=telOf(phone),u=web&&/^https?:\/\//.test(web)?web:(web&&/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(web)?"https://"+web:null);
+ return `<div class="acts">${t?`<a class="callb" href="tel:${t}" aria-label="Call ${esc(label)} at ${esc(phone)}">Call ${esc(String(phone).match(/(\d[\d-]*\d)/)?.[1]||phone)}</a>`:(phone&&!/^none/i.test(phone)?`<span class="num" style="font-size:1rem">${esc(phone)}</span>`:"")}${u?`<a class="webb" href="${esc(u)}" target="_blank" rel="noreferrer">Website</a>`:""}</div>`};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const app=document.getElementById("app");
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2600)}
-const svcList=svc=>`<div class="svc">${svc.map(([n,d,num,hot])=>`<div class="item ${hot?"hot":""}"><div><h3>${n}</h3><p>${d}</p></div><div class="num">${num}</div></div>`).join("")}</div>`;
-const fmtT=t=>new Date(t).toLocaleString("en-CA",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
-function due(t){const h=Math.round((t-Date.now())/H);return h<0?`<span class="over">${-h} h overdue</span>`:`in ${h} h`}
+const svcList=svc=>`<div class="svc">${svc.filter(x=>!x[4]||x[4]===S.prov).map(([n,d,num,hot])=>`<div class="item ${hot?"hot":""}"><div><h3>${n}</h3><p>${d}</p></div>${/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(num)?acts("",num,n):acts(num,"",n)}</div>`).join("")}</div>`;
 
 const V={
 home:()=>`
 <section class="hero"><div class="wrap">
   <img class="logo" src="${LOGO}" alt="VaiRavvan" width="640" height="289">
   <p class="tag">Your dignity. Your choices. Your next step.</p>
-  <p class="lede">The fastest way to the right help in Canada for abuse, violence, exploitation, mental health and isolation. You don't need an account to get help.</p>
+  <p class="lede">A calm, quick way to the right help in Canada for abuse, violence, exploitation, mental health and isolation. You don't need an account to get help.</p>
   <div class="row"><a class="btn now" href="#now">I need help now</a><a class="btn ghost" href="#find">Find the right help</a></div>
 </div></section>
 <section class="block"><div class="wrap">
@@ -405,7 +405,7 @@ path:()=>{const c=catById(S.cat)||CATS[0];return `
   <div id="pathbody" ${c.now?"":"hidden"} class="stack">
     <h2>Next steps</h2><ol class="steps">${c.steps.map(s=>`<li><span>${s}</span></li>`).join("")}</ol>
     <h2 style="margin-top:.8rem">Who can help</h2>${svcList(c.svc)}
-    <h2 style="margin-top:.8rem">In your province or territory</h2>${provSel()}${dirList(DIR.filter(r=>r.scope===S.prov&&catMatch(r,CATKEYS[c.id]||[])))}
+    <h2 style="margin-top:.8rem">In your province or territory</h2>${provSel()}${dirList(DIR.filter(r=>r.scope===S.prov&&catMatch(r,CATKEYS[c.id]||[])&&!c.svc.filter(x=>!x[4]||x[4]===S.prov).some(x=>telOf(x[2])&&telOf(x[2])===telOf(r.phone))))}
     <div class="req stack"><h3>Not sure where to start?</h3><p class="muted">211 can connect you with local services any time, in more than 150 languages. If you are in danger, call 911.</p></div>
   </div>
 </div></section>`},
@@ -418,7 +418,7 @@ kids:()=>{const L=[
  ["signal","Signal for Help","Ask for help with just your hand."],
  ["khp","Someone to talk to","Kids Help Phone is there any time."]];
  const done=Object.keys(S.kDone).length;
- const moon=`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="#ffffff" stroke="#f0d9c0" stroke-width="3"/><path d="M78 22a42 42 0 1 0 0 76a34 34 0 1 1 0-76z" fill="#3f4fd1"/><circle cx="52" cy="54" r="4" fill="#fff"/><path d="M45 70q8 7 16 0" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="44" cy="64" r="4" fill="#ff9fb0" opacity=".8"/></svg>`;
+ const moon=`<div class="devframe"><img src="assets/dev.webp" alt="Dev, the Promise Keeper, with his palm raised in the fear-not gesture"></div>`;
  const star=on=>`<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="${on?"#e46a1f":"#f0d9c0"}"/></svg>`;
  const P={
  body:()=>`<h2>My body belongs to me</h2><ul>
@@ -448,9 +448,9 @@ kids:()=>{const L=[
  khp:()=>`<h2>Someone to talk to</h2><p>Kids Help Phone is free, and someone is there day and night. You can talk about anything.</p>
    <ul><li>Call <b>1-800-668-6868</b></li><li>Text <b>CONNECT</b> to <b>686868</b></li><li>If you are in danger now, call <b>911</b>.</li></ul>`};
  return `<div class="kids"><div class="wrap">
-  <div class="khero">${moon}<div class="stack" style="gap:.6rem"><p class="eyebrow" style="color:#5b5480">VaiRavvan Kids · ages 5 to 12, with a grown-up</p><h1>Hi! I'm Chandra.</h1><p class="muted">Let's learn six ways to stay safe. Every lesson you finish earns a star.</p><div class="stars">${L.map(l=>star(S.kDone[l[0]])).join("")}<span>${done} of 6</span></div></div></div>
-  <div class="lessons">${L.map(([k,n,d])=>`<button class="lesson" type="button" data-lesson="${k}" aria-pressed="${S.kLesson===k}"><b>${n}</b><span>${d}</span>${S.kDone[k]?'<span class="done">Star earned</span>':""}</button>`).join("")}</div>
-  ${S.kLesson?`<div class="kpanel" id="kpanel">${P[S.kLesson]()}<div class="row"><button class="kbtn sun" id="kdone" type="button">${S.kDone[S.kLesson]?"Done":"I learned this!"}</button><button class="kbtn alt" id="kclose" type="button">Back to lessons</button></div></div>`:""}
+  <div class="khero">${moon}<div class="stack" style="gap:.6rem"><p class="eyebrow" style="color:#5b5480">VaiRavvan Kids · ages 5 to 12, with a grown-up</p><h1>Hi! I'm Dev, the Promise Keeper.</h1><p class="muted">I can't fly, and I don't wear a cape. My superpowers are real ones: I listen, I always keep my promises, and I shine a light to help kids find their way to safety. I promise to teach you six safety superpowers. Unlock each one to earn a star!</p><p style="font-weight:700;color:#3f4fd1">Real heroes are all around you: the safe grown-ups who love you and help you. Telling one of them is the bravest thing you can do.</p><div class="stars">${L.map(l=>star(S.kDone[l[0]])).join("")}<span>${done} of 6</span></div></div></div>
+  <div class="lessons">${L.map(([k,n,d],i)=>`<button class="lesson" type="button" data-lesson="${k}" aria-pressed="${S.kLesson===k}"><span class="sp">Superpower ${i+1}</span><b>${n}</b><span>${d}</span>${S.kDone[k]?'<span class="done">Superpower unlocked!</span>':""}</button>`).join("")}</div>
+  ${S.kLesson?`<div class="kpanel" id="kpanel">${P[S.kLesson]()}<div class="row"><button class="kbtn sun" id="kdone" type="button">${S.kDone[S.kLesson]?"Done":"I've got this superpower!"}</button><button class="kbtn alt" id="kclose" type="button">Back to lessons</button></div></div>`:""}
   <div class="grownups"><h2>For grown-ups</h2><p class="muted">VaiRavvan Kids asks children for no personal information. Set it up together, practise often, and keep the conversation open. These lessons are being reviewed with child-protection specialists and may change.</p></div>
  </div></div>`},
 
@@ -466,7 +466,7 @@ partners:()=>`
   </div>
   <div class="sos" style="border-color:var(--line)">
     <h2>Write to us</h2>
-    <p class="num" style="font-family:var(--display);font-size:1.4rem;user-select:all">devvrat.nair@dragonfruittechnologies.com</p>
+    <p class="num" style="font-family:var(--display);font-size:clamp(1.05rem,4.4vw,1.4rem);user-select:all;overflow-wrap:anywhere">devvrat.nair@dragonfruittechnologies.com</p>
     <p class="muted">Devvrat Nair, Founder, Dragonfruit Technologies. Every message is read personally.</p>
   </div>
   <p class="hint">This address is for organisations. If you need help yourself, please call 911 in an emergency, or see <a href="#now">Help now</a>.</p>
@@ -501,28 +501,14 @@ function render(){
   let v=(location.hash||"#home").slice(1); if(!V[v]) v="home";
   app.innerHTML=V[v]();
   document.querySelectorAll(".navlinks a").forEach(a=>{if(a.getAttribute("href")==="#"+v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  const T={home:"VaiRavvan",now:"Get help now · VaiRavvan",directory:"Directory · VaiRavvan",find:"Find help · VaiRavvan",path:"Next steps · VaiRavvan",kids:"VaiRavvan Kids",partners:"For organisations · VaiRavvan",about:"About · VaiRavvan"};
+  document.title=T[v]||"VaiRavvan";
   window.scrollTo(0,0); bind(v); bind2();
+  if(render.ran){const h=app.querySelector("h1");if(h){h.tabIndex=-1;h.focus({preventScroll:true})}} render.ran=true;
 }
 function bind(v){
   app.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{S.cat=b.dataset.cat;location.hash="path";if(location.hash==="#path")render()});
   app.querySelectorAll("[data-safe]").forEach(b=>b.onclick=()=>{if(b.dataset.safe==="no"){location.hash="now"}else{document.getElementById("safecheck").hidden=true;document.getElementById("pathbody").hidden=false}});
-  const fj=document.getElementById("f-join"); if(fj) fj.onsubmit=e=>{e.preventDefault();const c=document.getElementById("j-code").value.trim(),p=document.getElementById("j-pw").value,er=document.getElementById("j-err");
-    if(!c){er.textContent="Choose a codename to continue.";er.hidden=false;return} if(p.length<10){er.textContent="Use a password of at least 10 characters.";er.hidden=false;return}
-    S.user=c; if(document.getElementById("j-disg").checked) document.title="Notes"; toast("Account created"); location.hash="request"};
-  const fi=document.getElementById("f-in"); if(fi) fi.onsubmit=e=>{e.preventDefault();S.user=document.getElementById("i-code").value.trim()||"Moonlight";toast("Signed in");location.hash="mine"};
-  const fr=document.getElementById("f-req"); if(fr) fr.onsubmit=e=>{e.preventDefault();const er=document.getElementById("r-err");
-    if(!document.getElementById("r-ack").checked){er.textContent="Please confirm you understand this is not emergency help.";er.hidden=false;return}
-    const g=n=>fr.querySelector(`input[name="${n}"]:checked`).value; const n=String(138+S.requests.length).padStart(4,"0");
-    const r={ref:"VR-2026-"+n,who:S.user,cat:document.getElementById("r-cat").value,help:g("r-help"),contact:g("r-contact"),time:document.getElementById("r-time").value,lang:document.getElementById("r-lang").value,urg:g("r-urg"),rcv:Date.now(),due:Date.now()+(g("r-urg")==="Today"?4:48)*H,status:"New",pri:g("r-urg")==="Today"||catById(document.getElementById("r-cat").value).urg?"High":"Medium",note:document.getElementById("r-note").value.trim(),kids:document.getElementById("r-cat").value==="child",route:""};
-    S.requests.unshift(r); ADMIN.unshift(Object.assign({},r)); location.hash="done"};
-  const so=document.getElementById("signout"); if(so) so.onclick=()=>{S.user=null;document.title="VaiRavvan";toast("Signed out");location.hash="home"};
-  app.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{S.adminFilter=b.dataset.filter;render()});
-  app.querySelectorAll("tr[data-ref]").forEach(tr=>{const go=()=>{S.adminSel=tr.dataset.ref;const y=window.scrollY;render();window.scrollTo(0,y)};tr.onclick=go;tr.onkeydown=e=>{if(e.key==="Enter")go()}});
-  app.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{const r=ADMIN.find(x=>x.ref===S.adminSel);r.pri=document.getElementById("a-pri").value;const a=b.dataset.act;
-    if(a==="review"){r.status="Reviewed";toast("Marked reviewed")}
-    if(a==="route"){const to=document.getElementById("a-route").value;if(!to){toast("Choose a service to route to");return}r.route=to;r.status="Routed";toast("Routed to "+to)}
-    if(a==="close"){r.status="Closed";toast("Request closed")}
-    const mine=S.requests.find(x=>x.ref===r.ref); if(mine){mine.status=r.status} const y=window.scrollY;render();window.scrollTo(0,y)});
 }
 function bind2(){
   const pv=document.getElementById("prov"); if(pv) pv.onchange=()=>{S.prov=pv.value;const y=window.scrollY;render();window.scrollTo(0,y)};
